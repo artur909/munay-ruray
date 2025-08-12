@@ -1,21 +1,32 @@
 <template>
   <div>
     <!-- Hero Section -->
-    <section class="relative py-24 bg-rich-black">
-      <div class="container relative z-10 text-white">
+    <section class="relative py-24 wave-shape-primary text-white overflow-hidden">
+      <!-- Formas orgánicas de fondo -->
+      <div class="organic-blob-1" style="top: 15%; right: 10%; z-index: 1;"></div>
+      <div class="organic-blob-2" style="bottom: 25%; left: 5%; z-index: 1;"></div>
+      
+      <div class="container-full relative z-10 text-white">
         <h1 class="font-display text-center mb-6">Preguntas Frecuentes</h1>
-        <p class="text-xl md:text-2xl text-center max-w-3xl mx-auto">
+        <p class="text-xl md:text-2xl text-center max-w-3xl mx-auto text-white/90">
           Resolvemos tus dudas sobre el programa
         </p>
+      </div>
+
+      <!-- Divisor ondulado inferior -->
+      <div class="wave-divider-bottom">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="fill-gray-50"></path>
+        </svg>
       </div>
     </section>
 
     <!-- FAQ Section -->
-    <section class="section bg-antiflash-white">
-      <div class="container max-w-4xl">
+    <section class="py-16 md:py-24 bg-gray-50 section-with-shapes">
+      <div class="container-full max-w-4xl">
         <div class="space-y-6">
           <div v-for="(pregunta, index) in preguntas" :key="index"
-            class="bg-white rounded-2xl overflow-hidden shadow-sm">
+            class="card-enhanced overflow-hidden">
             <button
               @click="togglePregunta(index)"
               class="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
@@ -23,7 +34,7 @@
             >
               <span class="text-lg font-bold text-left">{{ pregunta.pregunta }}</span>
               <svg
-                class="w-6 h-6 text-turquoise transform transition-transform"
+                class="w-6 h-6 text-secondary transform transition-transform"
                 :class="{ 'rotate-180': preguntaActiva === index }"
                 fill="none"
                 viewBox="0 0 24 24"

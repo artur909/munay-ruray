@@ -67,7 +67,7 @@
           <div>
             <h4 class="font-bold mb-4">Contacto</h4>
             <ul class="space-y-2 text-gray-400">
-              <li>contacto@munayruray.pe</li>
+              <li>munayruray@gmail.com</li>
               <li>+51 999 999 999</li>
             </ul>
           </div>

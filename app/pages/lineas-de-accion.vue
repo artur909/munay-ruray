@@ -1,32 +1,39 @@
 <template>
   <div>
     <!-- Hero Section -->
-    <section class="relative py-24 bg-rich-black">
-      <div class="container relative z-10 text-white">
+    <section class="relative py-24 wave-shape-secondary text-white overflow-hidden">
+      <!-- Formas orgánicas de fondo -->
+      <div class="organic-blob-1" style="top: 15%; right: 10%; z-index: 1;"></div>
+      <div class="organic-blob-2" style="bottom: 25%; left: 5%; z-index: 1;"></div>
+      
+      <div class="container-full relative z-10 text-white">
         <h1 class="font-display text-center mb-6">Líneas de Acción</h1>
-        <p class="text-xl md:text-2xl text-center max-w-3xl mx-auto">
+        <p class="text-xl md:text-2xl text-center max-w-3xl mx-auto text-white/90">
           Estas son nuestras formas de actuar y transformar
         </p>
       </div>
+
+      <!-- Divisor ondulado inferior -->
+      <sectionDivider type="wave2" color="secondary" backgroundColor="white"/>
     </section>
 
     <!-- Líneas de Acción Detalladas -->
-    <section class="section bg-white">
-      <div class="container">
+    <section class="py-16 md:py-24 bg-white section-with-shapes">
+      <div class="container-full">
         <div class="space-y-24">
           <div v-for="(linea, index) in lineasAccion" :key="index"
             class="grid md:grid-cols-2 gap-12 items-center"
             :class="{ 'md:grid-flow-dense': index % 2 !== 0 }">
             <div :class="{ 'md:col-start-2': index % 2 !== 0 }">
-              <div class="w-16 h-16 bg-turquoise/10 rounded-full flex items-center justify-center mb-6">
-                <component :is="linea.icono" class="w-8 h-8 text-turquoise" />
+              <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-6 hover:bg-primary/20 transition-all duration-300 hover:scale-110">
+                <component :is="linea.icono" class="w-8 h-8 text-primary" />
               </div>
               <h2 class="text-3xl font-bold mb-4">{{ linea.titulo }}</h2>
               <p class="text-gray-600 mb-6">{{ linea.descripcion }}</p>
               <ul class="space-y-4">
                 <li v-for="(actividad, actIndex) in linea.actividades" :key="actIndex"
                   class="flex items-start">
-                  <svg class="w-6 h-6 text-turquoise mt-1 mr-3 flex-shrink-0" viewBox="0 0 24 24" fill="none">
+                  <svg class="w-6 h-6 text-secondary mt-1 mr-3 flex-shrink-0" viewBox="0 0 24 24" fill="none">
                     <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                       stroke-linejoin="round" />
                   </svg>
@@ -34,12 +41,15 @@
                 </li>
               </ul>
               <button @click="mostrarModal(linea)"
-                class="mt-8 btn-secondary">
-                Ver más
+                class="mt-8 cta-secondary-enhanced">
+                <span>Ver más</span>
+                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
               </button>
             </div>
             <div class="relative" :class="{ 'md:col-start-1': index % 2 !== 0 }">
-              <div class="absolute inset-0 bg-turquoise/20 blur-2xl rounded-full transform -rotate-6"></div>
+              <div class="absolute inset-0 bg-primary/20 blur-2xl rounded-full transform -rotate-6"></div>
               <img :src="linea.imagen" :alt="linea.titulo"
                 class="relative rounded-2xl shadow-xl w-full h-[400px] object-cover" />
             </div>
@@ -77,14 +87,26 @@
     </Teleport>
 
     <!-- CTA Final -->
-    <section class="bg-turquoise text-white py-20">
-      <div class="container text-center">
+    <section class="py-16 md:py-24 wave-shape-primary text-white relative overflow-hidden">
+      <!-- Divisor ondulado superior -->
+      <sectionDivider type="wave2" color="white" position="top" height="60px"/>
+
+      <!-- Formas orgánicas sólidas características -->
+      <div class="absolute top-20 right-10 w-48 h-48 bg-secondary opacity-15 animate-float-organic pointer-events-none" style="border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%; z-index: 0;"></div>
+      <div class="absolute bottom-20 left-10 w-36 h-36 bg-white opacity-8 animate-float-organic pointer-events-none" style="border-radius: 38% 62% 63% 37% / 70% 33% 67% 30%; animation-delay: 2s; z-index: 0;"></div>
+
+      <div class="container-full relative z-2 text-center">
         <h2 class="text-3xl md:text-4xl font-bold mb-6">
           ¿En qué línea de acción te gustaría participar?
         </h2>
-        <nuxt-link to="/unete"
-          class="inline-block bg-white text-turquoise px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-colors">
-          Postula ahora
+        <p class="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+          Elige la línea que más se alinee con tus intereses y comienza a transformar vidas
+        </p>
+        <nuxt-link to="/unete" class="cta-enhanced text-primary">
+          <span>Postula ahora</span>
+          <svg class="w-5 h-5 ml-3 icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
         </nuxt-link>
       </div>
     </section>

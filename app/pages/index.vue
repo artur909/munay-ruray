@@ -18,10 +18,9 @@
       <div class="container-full relative z-10 flex items-center min-h-screen">
         <div class="max-w-4xl space-y-8 text-white">
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight scroll-reveal text-reveal-words">
-            <span class="word" style="animation-delay: 0.1s">Transforma</span>
-            <span class="word" style="animation-delay: 0.2s">tu</span>
-            <span class="text-primary word" style="animation-delay: 0.3s">vocación</span>
-            <span class="word" style="animation-delay: 0.4s">en</span>
+            <span class="word" style="animation-delay: 0.1s">Transforma</span> <span class="word"
+              style="animation-delay: 0.2s">tu</span> <span class="text-primary word"
+              style="animation-delay: 0.3s">vocación</span> <span class="word" style="animation-delay: 0.4s">en</span>
             <span class="text-secondary word" style="animation-delay: 0.5s">acción</span>
           </h1>
 
@@ -48,17 +47,29 @@
         </div>
       </div>
 
+      <!-- Formas orgánicas de fondo -->
+
       <!-- Scroll indicator -->
       <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
         <div class="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
           <div class="w-1 h-3 bg-white rounded-full mt-2 animate-bounce"></div>
         </div>
       </div>
+
+      <!-- Divisor ondulado inferior -->
+      <!-- <SectionDivider type="wave2" color="primary" position="top"/> -->
+
+      <SectionDivider type="curve2" color="white" backgroundColor="transparent" />
+
     </section>
 
-    <!-- Sección de beneficios con parallax -->
-    <section class="py-16 md:py-24 bg-white parallax-bg"
-      style="background-image: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.95)), url('https://placehold.co/1920x1080/f8f9fa/e9e9e9?text=Background+Pattern')">
+    <!-- Sección de beneficios con formas orgánicas -->
+    <section class="py-16 md:py-24 bg-white relative">
+      <OrganicShapes :count="2" :colors="['primary', 'secondary']" :sizes="[250, 180]" :opacities="[0.04, 0.05]"
+        :positions="[
+          { top: 10, right: 5 },
+          { bottom: 15, left: 8 }
+        ]" :z-index="0" />
       <div class="container-full">
         <div class="grid lg:grid-cols-2 gap-20 items-center">
           <!-- Contenido -->
@@ -157,8 +168,11 @@
       </div>
     </section>
 
-    <!-- Líneas de acción - Layout myhealthprac.com -->
-    <section class="py-16 md:py-24 bg-gray-50">
+    <!-- Líneas de acción con divisor ondulado -->
+    <section class="py-16 md:py-24 bg-gray-50 relative">
+      <!-- Divisor ondulado superior -->
+      <SectionDivider type="wave3" color="white" backgroundColor="gray" position="top" />
+
       <div class="container-full">
         <div class="text-center mb-20 fade-in-up">
           <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8 leading-tight">
@@ -196,10 +210,14 @@
           </div>
         </div>
       </div>
+
+      <!-- Divisor ondulado inferior -->
+      <SectionDivider type="wave2" color="gray" backgroundColor="white" position="bottom" height="70px" />
     </section>
 
-    <!-- Testimonios - Layout myhealthprac.com -->
-    <section class="py-16 md:py-24 bg-white">
+    <!-- Testimonios con formas orgánicas -->
+    <section class="py-16 md:py-24 bg-white relative">
+
       <div class="container-full">
         <div class="grid lg:grid-cols-2 gap-20 items-center">
           <!-- Contenido -->
@@ -249,27 +267,22 @@
           </div>
         </div>
       </div>
+
+      <SectionDivider type="wave4" color="white" backgroundColor="primary" position="bottom" height="70px" />
     </section>
 
-    <!-- CTA Final con imagen de fondo -->
-    <section class="py-16 md:py-24 bg-image-section text-white relative overflow-hidden parallax-bg"
-      style="background-image: url('https://placehold.co/1920x800/e9b026/ffffff?text=Comunidad+Transformadora')">
-      <!-- Overlay adicional -->
-      <div class="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/70 to-secondary/60 z-1"></div>
-
-      <!-- Formas orgánicas flotantes -->
-      <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-float"></div>
-      <div class="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full blur-3xl animate-float-delayed"></div>
-
+    <!-- Divisor ondulado superior -->
+    <section class="py-16 md:py-24 wave-shape-primary text-white relative overflow-hidden">
+      
+      <!-- CTA Final con formas onduladas -->
       <div class="container-full relative z-2">
         <div class="max-w-4xl mx-auto text-center">
           <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-8 scroll-reveal text-reveal-words">
-            <span class="word" style="animation-delay: 0.1s">Súmate</span>
-            <span class="word" style="animation-delay: 0.2s">a</span>
-            <span class="word" style="animation-delay: 0.3s">una</span>
-            <span class="word" style="animation-delay: 0.4s">experiencia</span>
-            <span class="word" style="animation-delay: 0.5s">que</span>
-            <span class="text-white/90 word" style="animation-delay: 0.6s">transforma</span>
+            <span class="word" style="animation-delay: 0.1s">Súmate</span> <span class="word"
+              style="animation-delay: 0.2s">a</span> <span class="word" style="animation-delay: 0.3s">una</span> <span
+              class="word" style="animation-delay: 0.4s">experiencia</span> <span class="word"
+              style="animation-delay: 0.5s">que</span> <span class="text-white/90 word"
+              style="animation-delay: 0.6s">transforma</span>
           </h2>
           <p class="text-lg md:text-xl mb-12 text-white/90 max-w-3xl mx-auto scroll-reveal-stagger"
             style="animation-delay: 0.8s">
@@ -312,6 +325,7 @@
 </template>
 
 <script setup>
+import { SectionDivider } from '#components'
 import { onMounted, onUnmounted } from 'vue'
 
 // SEO

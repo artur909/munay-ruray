@@ -1,18 +1,25 @@
 <template>
   <div>
     <!-- Hero Section -->
-    <section class="relative py-24 bg-rich-black">
-      <div class="container relative z-10 text-white">
+    <section class="relative py-24 wave-shape-secondary text-white overflow-hidden">
+      <!-- Formas orgánicas de fondo -->
+      <div class="organic-blob-1" style="top: 15%; right: 10%; z-index: 1;"></div>
+      <div class="organic-blob-2" style="bottom: 25%; left: 5%; z-index: 1;"></div>
+      
+      <div class="container-full relative z-10 text-white">
         <h1 class="font-display text-center mb-6">Experiencias</h1>
-        <p class="text-xl md:text-2xl text-center max-w-3xl mx-auto">
+        <p class="text-xl md:text-2xl text-center max-w-3xl mx-auto text-white/90">
           Historias que inspiran y transforman
         </p>
       </div>
+
+      <!-- Divisor ondulado inferior -->
+      <sectionDivider type="wave4" color="secondary" backgroundColor="white" height="50px"/>
     </section>
 
     <!-- Testimonios Destacados -->
-    <section class="section bg-white">
-      <div class="container">
+    <section class="py-16 md:py-24 bg-white section-with-shapes">
+      <div class="container-full">
         <div class="max-w-6xl mx-auto">
           <div ref="testimoniosSlider" class="overflow-hidden">
             <div class="flex transition-transform duration-500 ease-in-out"
@@ -42,7 +49,7 @@
           <!-- Controles del slider -->
           <div class="flex justify-center mt-8 gap-4">
             <button @click="prevSlide"
-              class="w-12 h-12 rounded-full border-2 border-turquoise text-turquoise hover:bg-turquoise hover:text-white transition-colors flex items-center justify-center">
+              class="w-12 h-12 rounded-full border-2 border-secondary text-secondary hover:bg-secondary hover:text-white transition-colors flex items-center justify-center">
               <span class="sr-only">Anterior</span>
               <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -61,7 +68,10 @@
     </section>
 
     <!-- Galería de Fotos -->
-    <section class="section bg-antiflash-white">
+    <section class="section relative bg-antiflash-white">
+
+      <sectionDivider type="wave3" color="white" backgroundColor="gray" position="top" />
+
       <div class="container">
         <h2 class="text-center mb-12">Galería de Momentos</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -77,6 +87,8 @@
           </div>
         </div>
       </div>
+
+      <SectionDivider type="wave4" color="gray" backgroundColor="white"/>
     </section>
 
     <!-- Videos Testimoniales -->
@@ -142,6 +154,8 @@
 </template>
 
 <script setup>
+import { SectionDivider } from '#components'
+
 const currentSlide = ref(0)
 const modalActivo = ref(false)
 const fotoSeleccionada = ref(null)
