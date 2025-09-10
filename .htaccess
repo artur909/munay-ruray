@@ -1,0 +1,5 @@
+# Nginx no lee archivos .htaccess
+# Las configuraciones de límites de subida deben hacerse en:
+# 1. Configuración de Nginx del servidor virtual
+# 2. Configuración de PHP-FPM
+# 3. A través de Virtualmin/Webmin

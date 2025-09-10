@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IMB Institute — Formación especializada orientada a conversión</title>
+  <meta name="description" content="Programas en vivo con certificación y enfoque práctico. Próximas cohortes, cupos limitados, testimoniales y asesoría inmediata." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Paleta y base (incluye colores de conversión indicados en el informe) ===== */
+    :root{
+      --bg:#0f1112;            /* background oscuro para mantener estilo IMB */
+      --surface:#131516;
+      --card:#17191b;
+      --ink:#eef2f3;
+      --muted:#98a1a6;
+      --line:rgba(255,255,255,.05);
+      --primary:#0b5ed7;       /* azul corporativo */
+      --cta:#FF6B35;           /* CTA naranja (recomendado) */
+      --cta-press:#e25d2f;
+      --success:#10B981;
+      --alert:#EF4444;
+      --glass:rgba(255,255,255,.04);
+      --radius:14px;
+      --shadow:0 20px 50px rgba(0,0,0,.55);
+      font-size:16px; /* base para mobile-first */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+    a{color:inherit}
+    img{max-width:100%;display:block}
+    .container{width:min(1200px,calc(100% - 2rem));margin:0 auto}
+
+    /* ===== Header (sticky, simple) ===== */
+    header{position:sticky;top:0;z-index:90;background:linear-gradient(180deg,rgba(15,17,18,.85),rgba(15,17,18,.6));backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+    .logo-mark{width:30px;height:30px;border-radius:6px;background:linear-gradient(135deg,var(--primary),#0ea5e9)}
+    nav{display:flex;gap:8px;align-items:center}
+    nav a{padding:.5rem .8rem;border-radius:8px;color:var(--muted);font-weight:600;font-size:.95rem}
+    nav a:hover{background:rgba(255,255,255,.03);color:var(--ink)}
+    .btn{display:inline-flex;align-items:center;gap:.6rem;padding:.7rem 1rem;border-radius:12px;font-weight:700;border:1px solid transparent}
+    .btn-ghost{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.04)}
+    .btn-cta{background:var(--cta);color:#0b0b0b;padding:.85rem 1.2rem;border-radius:12px;box-shadow:0 14px 40px rgba(255,107,53,.12)}
+
+    /* ===== Sticky CTA mobile (min-height 48px enforced) ===== */
+    .sticky-cta{display:none;position:fixed;right:16px;left:16px;bottom:14px;z-index:95}
+    .sticky-cta .btn-cta{display:block;width:100%;height:52px;justify-content:center}
+
+    /* ===== HERO (orientado a conversión) ===== */
+    .hero{padding:44px 0 32px;position:relative}
+    .hero .wrap{display:grid;grid-template-columns:1fr 520px;gap:28px;align-items:center}
+    .eyebrow{font-size:.82rem;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+    .headline{font-family:Playfair Display,serif;font-weight:700;font-size:clamp(30px,5.2vw,56px);line-height:1.03;margin:.4rem 0}
+    .lead{color:#cfd6d8;max-width:58ch}
+    .hero-cta{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+    .hero-kpis{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+    .kpi{background:var(--card);border:1px solid var(--line);padding:8px 12px;border-radius:10px;color:var(--muted);font-weight:700}
+
+    /* Badges urgencia y cupos */
+    .badges{display:flex;gap:10px;align-items:center;margin-top:12px}
+    .badge{background:linear-gradient(90deg,rgba(255,255,255,.03),rgba(255,255,255,.01));padding:.45rem .7rem;border-radius:999px;border:1px solid rgba(255,255,255,.03);font-weight:700}
+    .badge.urgent{background:linear-gradient(90deg,var(--alert),#ff7b7b);color:#fff}
+
+    /* Hero media (video testimonial placeholder) */
+    .hero-media{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
+    .hero-media .poster{height:100%;min-height:320px;background-size:cover;background-position:center}
+    .play{position:absolute;left:16px;bottom:16px;background:rgba(0,0,0,.6);padding:.5rem;border-radius:999px;border:1px solid rgba(255,255,255,.06);display:inline-flex;align-items:center;gap:.5rem}
+
+    /* countdown and progress panel */
+    .cta-panels{display:flex;gap:12px;margin-top:18px}
+    .panel{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);border:1px solid var(--line);padding:12px;border-radius:12px}
+    .countdown{font-weight:900;font-size:1.1rem}
+    .progress{height:10px;background:#0b0c0d;border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.03)}
+    .progress > span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cta),#ff9a6f);transition:width .8s ease}
+
+    /* ===== Próximos lanzamientos (calendario visual) ===== */
+    section{padding:46px 0;border-top:1px solid var(--line)}
+    .section-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:18px}
+    .cards-row{display:flex;gap:16px;overflow:auto;padding-bottom:8px}
+    .course-card{min-width:280px;background:var(--card);border-radius:12px;border:1px solid var(--line);overflow:hidden;scroll-snap-align:start}
+    .course-thumb{height:160px;background-size:cover;background-position:center}
+    .course-body{padding:12px}
+    .course-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px;color:var(--muted);font-weight:700}
+    .chip{padding:.45rem .7rem;border-radius:999px;border:1px solid rgba(255,255,255,.03);background:transparent}
+
+    /* Filters area */
+    .filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+
+    /* ===== Testimoniales (carrusel) ===== */
+    .testimonials{display:grid;grid-template-columns:1fr;gap:12px}
+    .testimonial{background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--line)}
+
+    /* ===== Áreas de especialización ===== */
+    .areas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .area-card{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);padding:18px;border-radius:12px;border:1px solid var(--line)}
+    .stat{font-size:1.6rem;font-weight:900;color:var(--cta)}
+
+    /* ===== Página de curso (sección ejemplo) ===== */
+    .course-page{padding:36px 0;background:linear-gradient(180deg,transparent,rgba(255,255,255,.01))}
+    .course-wrap{display:grid;grid-template-columns:1fr 360px;gap:20px}
+    .breadcrumbs{font-size:.9rem;color:var(--muted);margin-bottom:8px}
+    .course-hero{background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--line)}
+    .benefits{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+    .benefit{background:rgba(255,255,255,.02);padding:10px;border-radius:10px}
+    .instructor{display:flex;gap:12px;align-items:center;margin-top:14px}
+    .instructor img{width:72px;height:72px;border-radius:8px;object-fit:cover}
+    .accordion{margin-top:12px}
+    .acc-item{border-top:1px solid var(--line)}
+    .acc-header{display:flex;justify-content:space-between;align-items:center;padding:12px;cursor:pointer}
+    .acc-panel{padding:12px;border-top:1px solid rgba(255,255,255,.02);display:none}
+
+    /* Sticky sidebar */
+    .sidebar{position:sticky;top:100px;background:var(--card);padding:14px;border-radius:12px;border:1px solid var(--line)}
+    .sidebar .btn-cta{width:100%;padding:16px;font-size:1rem}
+
+    /* Floating elements */
+    .chat-badge{position:fixed;right:18px;bottom:86px;background:linear-gradient(90deg,var(--primary),#0ea5e9);color:#fff;padding:.6rem .9rem;border-radius:999px;z-index:92;box-shadow:0 10px 40px rgba(11,94,215,.18);display:flex;gap:8px;align-items:center}
+    .toast{position:fixed;left:16px;bottom:86px;background:rgba(0,0,0,.6);color:#fff;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.06);z-index:92}
+
+    /* Footer */
+    footer{padding:34px 0;border-top:1px solid var(--line);color:var(--muted)}
+
+    /* Responsivo mobile-first */
+    @media (max-width:1000px){
+      .hero .wrap{grid-template-columns:1fr}
+      .course-wrap{grid-template-columns:1fr}
+      .areas{grid-template-columns:1fr}
+      .cards-row{gap:12px}
+      .sticky-cta{display:block}
+      .sidebar{position:static}
+    }
+    @media (max-width:560px){
+      :root{font-size:15px}
+      .btn-cta{padding:.75rem 1rem}
+      .btn-cta, .btn, .btn-sm{min-height:48px}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container topbar">
+      <div class="brand">
+        <div class="logo-mark" aria-hidden="true"></div>
+        <div aria-hidden="false">IMB</div>
+      </div>
+      <nav aria-label="navegación principal">
+        <a href="#capacitacion">Capacitación</a>
+        <a href="#lanzamientos">Próximos cursos</a>
+        <a href="#testimonios">Testimonios</a>
+        <a href="#areas">Áreas</a>
+        <a class="btn btn-ghost" href="#contacto">Contacto</a>
+        <a class="btn btn-cta" href="#lanzamientos">Asegurar mi cupo</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- STICKY CTA (mobile) -->
+  <div class="sticky-cta container"><a class="btn-cta" href="#lanzamientos">Asegurar mi cupo</a></div>
+
+  <!-- HERO -->
+  <main>
+    <section class="hero">
+      <div class="container wrap">
+        <div>
+          <div class="eyebrow">Formación especializada</div>
+          <h1 class="headline">Lidera tu crecimiento profesional con formación especializada de alto impacto</h1>
+          <p class="lead">Programas prácticos en <strong>mantenimiento, tecnología, gestión</strong> y más. Cohortes en vivo, proyectos reales y certificación con valor curricular.</p>
+
+          <div class="badges" aria-hidden="false">
+            <div class="badge">Próxima cohorte: <strong>17 Jun</strong></div>
+            <div class="badge urgent">Solo <strong>12</strong> cupos</div>
+            <div class="badge">Respuesta en &lt;30 min</div>
+          </div>
+
+          <!-- CTA principal + secundario -->
+          <div class="hero-cta">
+            <a class="btn btn-cta" href="#lanzamientos" id="heroCta">ASEGURAR MI CUPO</a>
+            <a class="btn btn-ghost" href="#contacto">Solicitar información</a>
+          </div>
+
+          <!-- KPIs reducidos para escaneo rápido -->
+          <div class="hero-kpis" role="list">
+            <div class="kpi" role="listitem">+8,500 alumni</div>
+            <div class="kpi" role="listitem">4.9/5 satisfacción</div>
+            <div class="kpi" role="listitem">25 cohortes activas</div>
+          </div>
+
+          <!-- Paneles con contador y barra de cupos -->
+          <div class="cta-panels">
+            <div class="panel" aria-live="polite">
+              <div class="muted">Cierre de inscripción</div>
+              <div class="countdown" id="heroCountdown">--:--:--</div>
+            </div>
+            <div class="panel">
+              <div class="muted">Cupos ocupados</div>
+              <div class="progress" aria-label="porcentaje de cupos"><span id="heroProgress"></span></div>
+              <small class="muted"><span id="heroCupText">18/25</span></small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video testimonial / imagen grande -->
+        <aside class="hero-media" role="img" aria-label="Testimonial visual">
+          <div class="poster" style="background-image:url('https://images.unsplash.com/photo-1592945403244-31e4d95a5019?q=80&w=1600&auto=format&fit=crop');"></div>
+          <button class="play" aria-label="Reproducir testimonial" onclick="openVideo()">▶ Ver testimonial (60s)</button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- PRÓXIMOS LANZAMIENTOS (calendario visual, filtros y CTAs específicos) -->
+    <section id="lanzamientos">
+      <div class="container">
+        <div class="section-title">
+          <h2>Próximos lanzamientos</h2>
+          <div class="muted">Fechas y cupos de las próximas cohortes</div>
+        </div>
+
+        <!-- filtros y búsqueda -->
+        <div class="filters" aria-hidden="false">
+          <input id="searchInput" class="input" placeholder="Buscar curso" style="padding:.7rem;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--ink);min-width:220px" />
+          <button class="chip" data-filter="all" aria-pressed="true">Todos</button>
+          <button class="chip" data-filter="Mantenimiento">Mantenimiento</button>
+          <button class="chip" data-filter="TI">TI</button>
+          <button class="chip" data-filter="Producción">Producción</button>
+        </div>
+
+        <div class="cards-row" id="launchRow" role="list" aria-live="polite">
+          <!-- tarjetas generadas por JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PRUEBA SOCIAL: Testimoniales -->
+    <section aria-labelledby="testiTitle">
+      <div class="container">
+        <div class="section-title">
+          <h2 id="testiTitle">Historias de impacto</h2>
+          <div class="muted">Resultados medibles de nuestra comunidad</div>
+        </div>
+        <div class="testimonials" id="testimonials">
+          <!-- testimoniales generados por JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ÁREAS DE ESPECIALIZACIÓN (cards con estadísticas) -->
+    <section id="areas">
+      <div class="container">
+        <div class="section-title"><h2>Áreas de especialización</h2><div class="muted">Rutas y especialidades con resultados</div></div>
+        <div class="areas">
+          <div class="area-card">
+            <div class="stat">95%</div>
+            <div class="muted">Alumnos en Finanzas reportaron aumento salarial</div>
+            <h3 style="margin-top:8px">Finanzas</h3>
+            <p class="muted">FP&A, Costos, Modelamiento</p>
+          </div>
+          <div class="area-card">
+            <div class="stat">89%</div>
+            <div class="muted">Proyectos aplicados implementados</div>
+            <h3 style="margin-top:8px">Mantenimiento</h3>
+            <p class="muted">TPM, RCM, Confiabilidad</p>
+          </div>
+          <div class="area-card">
+            <div class="stat">92%</div>
+            <div class="muted">Mejora en la toma de decisiones</div>
+            <h3 style="margin-top:8px">Data & BI</h3>
+            <p class="muted">Power BI, SQL, Python</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EJEMPLO: Página de curso (inline en el mismo archivo) -->
+    <section id="curso-1" class="course-page" aria-labelledby="cursoTitle">
+      <div class="container course-wrap">
+        <div>
+          <div class="breadcrumbs">Inicio › Capacitacion › Mantenimiento › <strong>Plan RCM</strong></div>
+          <div class="course-hero">
+            <h2 id="cursoTitle">Plan de Mantenimiento RCM (Cohorte Julio)</h2>
+            <div class="muted">Inicia: <strong>17 Junio</strong> · Duración: 8 semanas</div>
+            <div style="display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap">
+              <div class="badge urgent">Últimos <strong id="courseSeats">6</strong> cupos</div>
+              <div class="badge">Certificación con valor curricular</div>
+            </div>
+            <div class="benefits" style="margin-top:12px">
+              <div class="benefit">✅ Aumenta tu valor de mercado</div>
+              <div class="benefit">✅ Networking con profesionales</div>
+              <div class="benefit">✅ Proyecto final aplicable</div>
+              <div class="benefit">✅ Mentoring personalizado</div>
+            </div>
+
+            <div class="instructor">
+              <img loading="lazy" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop" alt="Instructor"/>
+              <div>
+                <strong>Ing. David Castro</strong>
+                <div class="muted">20 años en Hunt LNG · Docente principal</div>
+              </div>
+            </div>
+
+            <!-- Accordion malla curricular -->
+            <div class="accordion" id="curriculum">
+              <div class="acc-item">
+                <div class="acc-header">Módulo 1 — Fundamentos RCM <span class="muted">(2 semanas)</span></div>
+                <div class="acc-panel">Introducción, Historia, Principios. Actividades prácticas y casos reales.</div>
+              </div>
+              <div class="acc-item">
+                <div class="acc-header">Módulo 2 — Análisis de falla <span class="muted">(2 semanas)</span></div>
+                <div class="acc-panel">Métodos de análisis, herramientas y ejercicios en planta.</div>
+              </div>
+              <div class="acc-item">
+                <div class="acc-header">Módulo 3 — Implementación práctica <span class="muted">(4 semanas)</span></div>
+                <div class="acc-panel">Proyecto final aplicable, entregables y mentoría.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <aside class="sidebar" aria-label="Información de inscripción">
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><div style="width:46px;height:46px;border-radius:8px;background:linear-gradient(90deg,var(--primary),#0ea5e9)"></div><div><strong>Plan RCM</strong><div class="muted">Cohorte Julio</div></div></div>
+          <div style="margin-bottom:8px" class="muted">Precio:</div>
+          <div style="font-weight:900;font-size:1.2rem;margin-bottom:12px">S/ 1,200</div>
+          <div style="margin-bottom:12px" class="muted">Forma de pago y becas disponibles</div>
+          <button class="btn-cta" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Inscribirme ahora</button>
+          <a class="btn btn-ghost" style="display:block;text-align:center;margin-top:10px" href="https://wa.me/51999999999?text=Hola%20quiero%20informacion%20sobre%20Plan%20RCM">Hablar por WhatsApp</a>
+          <div style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px;color:var(--muted)">Garantía de satisfacción · Reembolso</div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Footer / Formulario rápido -->
+    <section id="contacto">
+      <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-bottom:18px">
+        <div style="background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--line)">
+          <h3 style="font-family:Playfair Display,serif;margin:0 0 8px">Descubre cómo IMB puede transformar tu futuro</h3>
+          <p class="muted">Agenda una llamada o solicita información. Respondemos en menos de 30 minutos.</p>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <span class="badge">SSL</span>
+            <span class="badge">Pago seguro</span>
+            <span class="badge">Asesoría en 30 min</span>
+          </div>
+        </div>
+
+        <form onsubmit="event.preventDefault();alert('¡Gracias! Nos pondremos en contacto pronto.');" style="background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--line)">
+          <div style="display:grid;gap:8px">
+            <input class="input" placeholder="Nombres *" required style="padding:.85rem;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,.04);color:var(--ink)" />
+            <input class="input" placeholder="Apellidos *" required style="padding:.85rem;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,.04);color:var(--ink)" />
+            <input class="input" placeholder="Whatsapp *" required style="padding:.85rem;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,.04);color:var(--ink)" />
+            <input class="input" type="email" placeholder="Correo *" required style="padding:.85rem;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,.04);color:var(--ink)" />
+            <textarea placeholder="¿Qué te interesa?" rows="3" style="padding:.85rem;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,.04);color:var(--ink)"></textarea>
+            <button class="btn-cta" style="width:100%;padding:14px">Enviar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CHAT BADGE, TOASTS y TESTIMONIAL POPUP -->
+  <div class="chat-badge" role="button" onclick="openChat()">💬 Habla con un asesor · 30s</div>
+  <div id="toast" class="toast" style="display:none">Alguien se inscribió hace 2 horas en Power BI</div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container" style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center">
+      <div>
+        <strong>IMB Institute</strong>
+        <div class="muted" style="margin-top:6px">info@imbinstitute.com · +51 9XX XXX XXX</div>
+      </div>
+      <div class="muted">© <span id="year"></span> Derechos reservados</div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== Año dinámico =====
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ===== Contador HERO (fecha: 17 June of current or next year) =====
+    (function(){
+      const heroCountdown = document.getElementById('heroCountdown');
+      const heroProgress = document.getElementById('heroProgress');
+      const heroCupText = document.getElementById('heroCupText');
+      const today = new Date();
+      const year = today.getFullYear() + (today.getMonth()>5 ? 1 : 0); // pick next mid-year if already past
+      const closeDate = new Date(`${year}-06-17T23:59:59`);
+      const totalCupos = 25; let ocupados = 18; // ejemplo - en web real viene de la API
+      function updateHero(){
+        const diff = Math.max(0, closeDate - new Date());
+        if(diff<=0){ heroCountdown.textContent = 'Inscripciones cerradas'; } else {
+          const d = Math.floor(diff/86400000); const h = Math.floor(diff%86400000/3600000); const m = Math.floor(diff%3600000/60000); const s = Math.floor(diff%60000/1000);
+          heroCountdown.textContent = `${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m`;
+        }
+        heroProgress.style.width = (ocupados/totalCupos*100) + '%';
+        heroCupText.textContent = `${ocupados}/${totalCupos}`;
+      }
+      updateHero(); setInterval(updateHero,1000);
+    })();
+
+    // ===== Datos de cursos (mock) e inyección en DOM con lazy loading =====
+    const cursos = [
+      {id:'rcm', area:'Mantenimiento', title:'Plan de Mantenimiento RCM', date:'2025-06-17', seats:[18,25], rating:4.8, image:'https://images.unsplash.com/photo-1581092334808-7e0cdfbb6797?q=80&w=1600&auto=format&fit=crop'},
+      {id:'pbi', area:'TI', title:'Automatización con Power BI', date:'2025-06-24', seats:[21,25], rating:4.9, image:'https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1600&auto=format&fit=crop'},
+      {id:'seg', area:'Derecho', title:'Gestión de Seguridad y Normativa', date:'2025-07-01', seats:[7,25], rating:4.7, image:'https://images.unsplash.com/photo-1575507479993-7bb702d5e966?q=80&w=1600&auto=format&fit=crop'},
+      {id:'cal', area:'Producción', title:'Calidad & Mejora Continua', date:'2025-07-05', seats:[12,25], rating:4.8, image:'https://images.unsplash.com/photo-1581092588429-1e7eab76ba53?q=80&w=1600&auto=format&fit=crop'}
+    ];
+
+    const launchRow = document.getElementById('launchRow');
+    function renderLaunches(list){
+      launchRow.innerHTML='';
+      list.forEach(c => {
+        const el = document.createElement('article'); el.className='course-card';
+        const [occ,tot] = c.seats; const pct = Math.round((occ/tot)*100);
+        el.innerHTML = `
+          <div class="course-thumb" style="background-image:url('${c.image}')" loading="lazy" role="img" aria-label="${c.title}"></div>
+          <div class="course-body">
+            <h3 style="margin:0">${c.title}</h3>
+            <div class="course-meta"><span>${new Date(c.date).toLocaleDateString('es-PE',{day:'2-digit',month:'short'})}</span><span class="rating">${c.rating}★</span></div>
+            <div style="margin-top:10px"><div class="progress" aria-hidden><span style="width:${pct}%"></span></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+              <div class="muted">Cupos: <strong>${occ}/${tot}</strong></div>
+              <div style="display:flex;gap:8px"><a class="btn btn-ghost" href="#curso-1">Ver detalles</a><a class="btn btn-cta" href="#contacto">Inscribirme</a></div>
+            </div>
+          </div>`;
+        launchRow.appendChild(el);
+      });
+    }
+    renderLaunches(cursos);
+
+    // ===== Filters & search =====
+    document.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click',e=>{
+      document.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed','false'));
+      btn.setAttribute('aria-pressed','true'); const f=btn.dataset.filter; if(f==='all') renderLaunches(cursos); else renderLaunches(cursos.filter(x=>x.area===f));
+    }));
+    document.getElementById('searchInput').addEventListener('input',e=>{const q=e.target.value.toLowerCase(); renderLaunches(cursos.filter(x=>x.title.toLowerCase().includes(q)||x.area.toLowerCase().includes(q)));});
+
+    // ===== Testimoniales render =====
+    const testiList = [
+      {name:'Juan Pérez', role:'Jefe de Mantenimiento en Argos', txt:'Aumenté mi salario 40% tras completar la ruta de Mantenimiento.'},
+      {name:'María González', role:'Coordinadora de Calidad', txt:'Implementamos el proyecto final y recuperamos la inversión en 2 meses.'},
+      {name:'Carlos Rivas', role:'Analista de Datos', txt:'La mentoría me permitió conseguir la promoción.'}
+    ];
+    const testiContainer = document.getElementById('testimonials');
+    testiList.forEach(t=>{ const a=document.createElement('div'); a.className='testimonial'; a.innerHTML=`<p style="margin:0 0 6px;font-weight:700">“${t.txt}”</p><small class="muted">${t.name} · ${t.role}</small>`; testiContainer.appendChild(a); });
+
+    // Slider automático de testimonios (simple scroll)
+    setInterval(()=>{const el=testiContainer; const first=el.firstElementChild; el.appendChild(first.cloneNode(true)); el.removeChild(first);},5000);
+
+    // ===== Accordion curriculum (accessible) =====
+    document.querySelectorAll('.acc-item').forEach(item=>{
+      const hdr=item.querySelector('.acc-header'); const panel=item.querySelector('.acc-panel'); panel.style.display='none'; hdr.addEventListener('click',()=>{ const open = panel.style.display==='block'; document.querySelectorAll('.acc-panel').forEach(p=>p.style.display='none'); if(!open) panel.style.display='block'; });
+    });
+
+    // ===== Drag scroll for rows (touch optimization) =====
+    function dragScroll(el){ let down=false,startX,scrollLeft; el.addEventListener('pointerdown',e=>{down=true;startX=e.pageX - el.offsetLeft;scrollLeft=el.scrollLeft;el.setPointerCapture(e.pointerId);}); el.addEventListener('pointermove',e=>{if(!down) return; const x=e.pageX - el.offsetLeft; const walk=(x-startX)*1.2; el.scrollLeft = scrollLeft - walk;}); el.addEventListener('pointerup',e=>{down=false;}); el.addEventListener('pointercancel',()=>{down=false}); }
+    dragScroll(document.getElementById('launchRow'));
+
+    // ===== Social proof notifications (every few seconds) =====
+    const toast = document.getElementById('toast'); const msgs=['Alguien se inscribió hace 2 horas en Power BI','15 personas vieron este curso hoy','Último cupo para Plan RCM']; let ti=0; setInterval(()=>{ toast.textContent = msgs[ti%msgs.length]; toast.style.opacity=1; toast.style.display='block'; setTimeout(()=>{toast.style.opacity=0; toast.style.display='none'},4200); ti++; }, 10000);
+
+    // ===== Testimonial emergente (modal) cada 45s =====
+    function showTestimonialPopup(){ const t = testiList[Math.floor(Math.random()*testiList.length)]; const modal=document.createElement('div'); modal.style.position='fixed'; modal.style.right='16px'; modal.style.top='16px'; modal.style.background='var(--card)'; modal.style.border='1px solid var(--line)'; modal.style.padding='12px'; modal.style.borderRadius='10px'; modal.style.zIndex=120; modal.innerHTML = `<strong>${t.name}</strong><div style="margin-top:6px">${t.txt}</div><button style="margin-top:8px;padding:.5rem .7rem;border-radius:8px;background:var(--cta);border:none;color:#0b0b0b">Cerrar</button>`; modal.querySelector('button').addEventListener('click',()=>document.body.removeChild(modal)); document.body.appendChild(modal); setTimeout(()=>{ if(document.body.contains(modal)) document.body.removeChild(modal); },12000); }
+    setInterval(showTestimonialPopup,45000);
+
+    // ===== Chat badge action =====
+    function openChat(){ window.open('https://wa.me/51999999999?text=Hola%20quiero%20informaci%C3%B3n','_blank'); }
+    window.openChat = openChat;
+
+    // ===== Play testimonial (demo) =====
+    function openVideo(){ alert('Reproducir video testimonial (60s) — placeholder'); }
+    window.openVideo = openVideo;
+
+    // ===== Ensure CTAs large on touch devices (runtime fix if needed) =====
+    (function(){ if(window.innerWidth<560){ document.querySelectorAll('.btn-cta').forEach(b=>b.style.minHeight='48px'); }})();
+
+  </script>
+</body>
+</html>

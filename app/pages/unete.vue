@@ -403,13 +403,24 @@ const validateAndSetFile = (file) => {
   const maxSize = 5 * 1024 * 1024 // 5MB
   const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
 
-  if (!allowedTypes.includes(file.type)) {
+  // Verificar tipo de archivo por extensión también
+  const fileName = file.name.toLowerCase()
+  const validExtensions = ['.pdf', '.doc', '.docx']
+  const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext))
+
+  if (!allowedTypes.includes(file.type) && !hasValidExtension) {
     errors.value.cv = 'Solo se permiten archivos PDF, DOC o DOCX'
     return
   }
 
   if (file.size > maxSize) {
-    errors.value.cv = 'El archivo no debe superar los 5MB'
+    errors.value.cv = `El archivo no debe superar los 5MB. Tu archivo tiene ${formatFileSize(file.size)}`
+    return
+  }
+
+  // Verificación adicional para archivos muy pequeños (posibles archivos corruptos)
+  if (file.size < 1024) { // 1KB
+    errors.value.cv = 'El archivo parece estar corrupto o vacío'
     return
   }
 
@@ -520,39 +531,60 @@ const enviarFormulario = async () => {
       }
     })
 
-    // Aquí iría la lógica de envío del formulario
-    // await $fetch('/api/postulacion', {
-    //   method: 'POST',
-    //   body: formDataToSend
-    // })
-
-    // Simulación de envío
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    modalExito.value = true
-
-    // Limpiar formulario
-    formData.value = {
-      nombres: '',
-      telefono: '',
-      email: '',
-      universidad: '',
-      universidadOtros: '',
-      anioEstudio: '',
-      edad: '',
-      carrera: '',
-      carreraOtro: '',
-      experienciaPrevia: '',
-      disponibilidad: '',
-      cv: null,
-      terminos: false
+    // Verificar tamaño del archivo antes de enviar
+    if (formData.value.cv && formData.value.cv.size > 8 * 1024 * 1024) { // 8MB
+      throw new Error('El archivo CV es demasiado grande. El tamaño máximo permitido es 8MB.')
     }
 
-    errors.value = {}
+    // Enviar formulario
+    const response = await $fetch('https://munay.roomstudio.pe/api/postulaciones.php', {
+      method: 'POST',
+      body: formDataToSend
+    })
+
+    if (response.success) {
+      modalExito.value = true
+
+      // Limpiar formulario
+      formData.value = {
+        nombres: '',
+        telefono: '',
+        email: '',
+        universidad: '',
+        universidadOtros: '',
+        anioEstudio: '',
+        edad: '',
+        carrera: '',
+        carreraOtro: '',
+        experienciaPrevia: '',
+        disponibilidad: '',
+        cv: null,
+        terminos: false
+      }
+
+      errors.value = {}
+    } else {
+      throw new Error(response.error || 'Error al enviar la postulación')
+    }
 
   } catch (error) {
     console.error('Error al enviar el formulario:', error)
-    // Aquí podrías mostrar un mensaje de error
+    
+    let errorMessage = 'Error al enviar el formulario. '
+    
+    if (error.message.includes('413') || error.message.includes('Content Too Large')) {
+      errorMessage += 'El archivo es demasiado grande. Por favor, reduce el tamaño de tu CV a menos de 5MB.'
+    } else if (error.message.includes('timeout')) {
+      errorMessage += 'La conexión tardó demasiado. Verifica tu conexión a internet e intenta nuevamente.'
+    } else if (error.message) {
+      errorMessage += error.message
+    } else {
+      errorMessage += 'Por favor, intenta nuevamente.'
+    }
+    
+    // Mostrar error al usuario
+    alert(errorMessage)
+    
   } finally {
     enviando.value = false
   }

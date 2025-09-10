@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IMB Institute — Formación especializada de alto impacto</title>
+  <meta name="description" content="Lidera tu crecimiento profesional con formación especializada, cohortes en vivo y expertos de la industria." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* Paleta estilo IMB (oscura, sobria) */
+      --bg:#111416;           /* carbón profundo */
+      --surface:#161a1d;      /* capa principal */
+      --card:#1b2024;         /* tarjetas / paneles */
+      --ink:#E7ECEF;          /* texto principal */
+      --muted:#9AA4AB;        /* texto secundario */
+      --line:#2a3237;         /* bordes sutiles */
+      --accent:#5CC9F5;       /* azul turquesa sutil */
+      --accent-2:#8BE3D9;     /* acento secundario verdiazul */
+      --btn:#e8eef1;          /* botones claros sobre dark */
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+    .container{width:min(1200px,100% - 3rem);margin-inline:auto}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(110%) blur(8px);background:linear-gradient(180deg, rgba(17,20,22,.85), rgba(17,20,22,.55));border-bottom:1px solid rgba(255,255,255,.04)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
+    .brand .mark{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 0 0 1px #0b1114 inset}
+    nav a{padding:.55rem .8rem;border-radius:10px;color:var(--muted)}
+    nav a:hover{background:rgba(255,255,255,.05);color:var(--ink)}
+    .btn{display:inline-flex;align-items:center;gap:.55rem;padding:.75rem 1rem;border-radius:12px;font-weight:700;border:1px solid var(--line)}
+    .btn-primary{background:#e6edf1;color:#0e1214;border-color:transparent}
+    .btn-primary:hover{filter:brightness(.95)}
+    .btn-ghost{background:transparent;color:var(--ink)}
+    .btn-ghost:hover{background:rgba(255,255,255,.05)}
+
+    /* Hero */
+    .hero{position:relative;isolation:isolate}
+    .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center;padding:42px 0}
+    .eyebrow{letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-size:.77rem}
+    .headline{font-family:"Playfair Display",serif;font-weight:700;line-height:1.08;font-size:clamp(36px,5.2vw,56px);margin:.2rem 0 1rem}
+    .lead{color:#cfd6da;max-width:58ch}
+    .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+    .hero-cta .btn{border-radius:999px}
+
+    .hero-photo{position:relative;border-radius:28px;overflow:hidden;background:#0c0f12;border:1px solid rgba(255,255,255,.06);box-shadow:var(--shadow)}
+    .hero-photo::after{content:"";position:absolute;inset:0;background:radial-gradient(1200px 400px at 100% 30%, rgba(92,201,245,.25), transparent), linear-gradient(0deg, rgba(12,15,18,.1), rgba(12,15,18,.1))}
+    .hero-aside{position:absolute;inset:auto 24px 24px auto;background:rgba(12,15,18,.65);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);padding:10px 14px;border-radius:12px}
+
+    /* Section base */
+    section{padding:54px 0;border-top:1px solid rgba(255,255,255,.04)}
+    .section-title{display:flex;justify-content:center;margin-bottom:24px}
+    .section-title h2{font-family:"Playfair Display",serif;font-size:clamp(24px,3vw,32px);margin:0;font-weight:700}
+    .muted{color:var(--muted)}
+
+    /* Por qué elegir */
+    .why{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .why-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+    .why .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .why ul{margin:0;padding-left:1.1rem}
+    .why li{margin:.35rem 0}
+
+    /* Áreas de capacitación */
+    .areas-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .scroller{display:flex;gap:16px;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+    .scroller::-webkit-scrollbar{height:8px}
+    .scroller::-webkit-scrollbar-thumb{background:#2a3237;border-radius:20px}
+    .card{position:relative;min-width:320px;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+    .card .thumb{aspect-ratio:16/9;position:relative;background:linear-gradient(135deg,#0b3646,#16232a)}
+    .card .thumb img{width:100%;height:100%;object-fit:cover;filter:saturate(.9) contrast(1.05)}
+    .card .thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent, rgba(0,0,0,.35))}
+    .card .body{padding:14px 16px}
+    .card h3{margin:0 0 4px;font-size:1.05rem}
+    .card .actions{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+    .btn-small{padding:.6rem .85rem;border-radius:12px;font-weight:700;border:1px solid var(--line);font-size:.92rem}
+
+    /* Conversando */
+    .talks{position:relative;border-radius:24px;background:radial-gradient(1200px 400px at 0% 0%, rgba(92,201,245,.15), transparent), var(--surface);border:1px solid var(--line);overflow:hidden}
+    .talks .wrap{display:grid;grid-template-columns:1fr 1.4fr;gap:20px;align-items:center}
+    .talks .photo{border-left:1px solid var(--line)}
+
+    /* Testimonial band */
+    .band{position:relative;border-radius:24px;overflow:hidden;background:#0c0f12;border:1px solid var(--line)}
+    .band .quote{position:absolute;right:24px;bottom:24px;max-width:520px;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.08);padding:14px 16px;border-radius:14px}
+
+    /* Formulario + Footer */
+    .cta-form{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+    .panel{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+    .input{background:#0e1214;color:var(--ink);border:1px solid #273036;border-radius:12px;padding:.9rem 1rem}
+    .input:focus{outline:2px solid rgba(92,201,245,.35);border-color:rgba(92,201,245,.45)}
+    .footer{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:24px;color:var(--muted)}
+    .footer h4{margin:0 0 10px;color:var(--ink)}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:.55rem .8rem;border:1px solid var(--line);border-radius:999px}
+
+    /* Responsivo */
+    @media (max-width:1000px){
+      .hero .wrap{grid-template-columns:1fr}
+      .talks .wrap{grid-template-columns:1fr}
+      .why{grid-template-columns:1fr}
+      .cta-form{grid-template-columns:1fr}
+      .footer{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width:640px){
+      .footer{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <span>IMB</span>
+      </div>
+      <nav aria-label="principal">
+        <a href="#nosotros">Nosotros</a>
+        <a href="#capacitacion">Capacitación</a>
+        <a href="#novedades">Novedades</a>
+        <a href="#contacto" class="btn btn-ghost">Contacto</a>
+        <a href="#programas" class="btn btn-primary">Ver programas</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container wrap">
+      <div>
+        <div class="eyebrow">Formación especializada</div>
+        <h1 class="headline">Lidera tu crecimiento profesional con formación de alto impacto.</h1>
+        <p class="lead">Programas de capacitación en calidad, mantenimiento, tecnología, gestión y más. Aprende con expertos, aplica en proyectos reales y destaca en tu industria.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#programas">Ver programas</a>
+          <a class="btn btn-ghost" href="#contacto">Solicitar información</a>
+        </div>
+      </div>
+      <figure class="hero-photo">
+        <img src="https://images.unsplash.com/photo-1592945403244-31e4d95a5019?q=80&w=1600&auto=format&fit=crop" alt="Profesional de industria" style="width:100%;height:100%;object-fit:cover">
+        <figcaption class="hero-aside">Cohortes en vivo · Certificación con valor curricular</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ¿Por qué elegir IMB? -->
+  <section>
+    <div class="container">
+      <div class="section-title"><h2>¿Por qué elegir IMB Institute?</h2></div>
+      <div class="why">
+        <div class="why-card">
+          <p class="muted">En IMB Institute impulsamos el crecimiento profesional con programas especializados, actualizados y con enfoque práctico.</p>
+          <div class="cols">
+            <ul>
+              <li>Certificaciones con valor curricular</li>
+              <li>Formato en vivo y asincrónico</li>
+              <li>Asesoría personalizada y seguimiento</li>
+              <li>Enfoque en casos reales</li>
+            </ul>
+            <ul>
+              <li>Docentes con experiencia nacional e internacional</li>
+              <li>Networking con profesionales de la industria</li>
+              <li>Programas por niveles y rutas</li>
+              <li>Garantía de satisfacción</li>
+            </ul>
+          </div>
+        </div>
+        <div class="why-card">
+          <strong>Resultados que importan</strong>
+          <p class="muted">Acompañamos a cada cohorte con proyectos aplicados y métricas claras para que el aprendizaje se traduzca en impacto laboral.</p>
+          <div class="pill" style="margin-top:8px">⭐ 4.9/5 satisfacción · +8,500 alumni</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Áreas de capacitación -->
+  <section id="capacitacion">
+    <div class="container">
+      <div class="areas-head">
+        <div class="section-title" style="margin:0"><h2>Áreas de capacitación</h2></div>
+        <p class="muted">Brindamos programas especializados para potenciar habilidades y fortalecer competencias.</p>
+      </div>
+      <div class="scroller" id="areasScroller" aria-label="Áreas (desplaza para ver más)">
+        <!-- Cards -->
+        <article class="card">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1600&auto=format&fit=crop" alt="Tecnología de la Información"></div>
+          <div class="body">
+            <h3>Tecnología de la Información</h3>
+            <div class="muted">Data, BI, Automatización</div>
+            <div class="actions">
+              <a class="btn-small" href="#">Ver programa</a>
+              <span class="muted">Inicia: 17 Jun</span>
+            </div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1581092334808-7e0cdfbb6797?q=80&w=1600&auto=format&fit=crop" alt="Mantenimiento"></div>
+          <div class="body">
+            <h3>Mantenimiento</h3>
+            <div class="muted">TPM, RCM, Confiabilidad</div>
+            <div class="actions">
+              <a class="btn-small" href="#">Ver programa</a>
+              <span class="muted">Inicia: 24 Jun</span>
+            </div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1575507479993-7bb702d5e966?q=80&w=1600&auto=format&fit=crop" alt="Derechos y Leyes"></div>
+          <div class="body">
+            <h3>Derechos y Leyes</h3>
+            <div class="muted">Normativa, Seguridad, Gestión</div>
+            <div class="actions">
+              <a class="btn-small" href="#">Ver programa</a>
+              <span class="muted">Inicia: 01 Jul</span>
+            </div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1581092588429-1e7eab76ba53?q=80&w=1600&auto=format&fit=crop" alt="Producción"></div>
+          <div class="body">
+            <h3>Producción</h3>
+            <div class="muted">Calidad, Mejora Continua</div>
+            <div class="actions">
+              <a class="btn-small" href="#">Ver programa</a>
+              <span class="muted">Inicia: 05 Jul</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conversando en IMB -->
+  <section>
+    <div class="container talks">
+      <div class="wrap">
+        <div style="padding:24px">
+          <div class="eyebrow">Conversando en IMB Institute</div>
+          <h3 style="font-family:Playfair Display,serif;font-size:clamp(22px,3.2vw,32px);margin:.3rem 0 1rem">Ideas que inspiran. Conocimiento que transforma.</h3>
+          <p class="muted">Explora entrevistas con docentes y expertos, donde ampliamos horizontes con casos reales y aprendizajes accionables.</p>
+          <div style="margin-top:14px"><a class="btn btn-ghost" href="#">Ver más</a></div>
+        </div>
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1800&auto=format&fit=crop" alt="Conversación" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Banda de Testimonio -->
+  <section>
+    <div class="container band">
+      <img src="https://images.unsplash.com/photo-1508672019048-805c876b67e2?q=80&w=2000&auto=format&fit=crop" alt="Alumno" style="width:100%;height:420px;object-fit:cover;filter:grayscale(30%) contrast(1.05)">
+      <div class="quote">
+        <p style="margin:0 0 6px">“Cuando estableces hábitos de trabajo con excelencia, se convierten en habilidades productivas.”</p>
+        <small class="muted">Ing. Yassín Vázquez — Docente Principal, Área Mantenimiento</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- Formulario de contacto / Footer superior -->
+  <section id="contacto">
+    <div class="container cta-form">
+      <div class="panel">
+        <h3 style="font-family:Playfair Display,serif;margin:0 0 8px">Descubre cómo IMB puede transformar tu futuro</h3>
+        <p class="muted">Agenda una llamada o solicita información. Respondemos en menos de 30 minutos.</p>
+      </div>
+      <form class="panel" onsubmit="event.preventDefault();alert('¡Gracias! Nos pondremos en contacto pronto.');">
+        <div class="field"><label for="nombres">Nombres *</label><input class="input" id="nombres" required placeholder="Tu nombre"/></div>
+        <div class="field"><label for="apellidos">Apellidos *</label><input class="input" id="apellidos" required placeholder="Tus apellidos"/></div>
+        <div class="field"><label for="whats">Whatsapp *</label><div style="display:flex;gap:10px"><span class="pill">+51</span><input class="input" id="whats" required placeholder="999 999 999" inputmode="numeric" pattern="[0-9 ]+" style="flex:1"></div></div>
+        <div class="field"><label for="correo">Correo *</label><input class="input" id="correo" type="email" required placeholder="tu@email.com"></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:6px">Enviar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="border-top:1px solid rgba(255,255,255,.04);padding:48px 0">
+    <div class="container footer">
+      <div>
+        <h4>IMB</h4>
+        <div class="muted">Contacto</div>
+        <div style="margin-top:6px;display:grid;gap:6px">
+          <a href="mailto:info@imbinstitute.com">info@imbinstitute.com</a>
+          <a href="mailto:gerenciageneral@imbinstitute.com">gerenciageneral@imbinstitute.com</a>
+          <a href="mailto:admisiones@imbinstitute.com">admisiones@imbinstitute.com</a>
+        </div>
+      </div>
+      <div>
+        <h4>Áreas de Capacitación</h4>
+        <div style="display:grid;gap:6px">
+          <a href="#">Analítica</a>
+          <a href="#">Calidad</a>
+          <a href="#">Derechos y Leyes</a>
+          <a href="#">Finanzas</a>
+          <a href="#">Mantenimiento</a>
+          <a href="#">Producción</a>
+          <a href="#">Recursos Humanos</a>
+          <a href="#">Salud</a>
+        </div>
+      </div>
+      <div>
+        <h4>Campus</h4>
+        <div style="display:grid;gap:8px">
+          <a class="pill" href="#">Certificados</a>
+          <a class="pill" href="#">Soporte</a>
+          <a class="pill" href="#">Bienestar académico</a>
+        </div>
+      </div>
+      <div>
+        <h4>Navegación</h4>
+        <div style="display:grid;gap:6px">
+          <a href="#">Inicio</a>
+          <a href="#nosotros">Nosotros</a>
+          <a href="#capacitacion">Capacitación</a>
+          <a href="#novedades">Novedades</a>
+        </div>
+      </div>
+    </div>
+    <div class="container" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:24px;color:var(--muted)">
+      <small>© <span id="year"></span> Derechos Reservados. IMB Institute.</small>
+      <small>
+        <a href="#">Política de privacidad</a> · <a href="#">Términos</a>
+      </small>
+    </div>
+  </footer>
+
+  <script>
+    // Año dinámico
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Scroll sutil para carrusel con botones arrastrando
+    const scroller = document.getElementById('areasScroller');
+    let isDown = false, startX = 0, scrollLeft = 0;
+    scroller.addEventListener('mousedown', (e)=>{isDown=true;startX=e.pageX-scroller.offsetLeft;scrollLeft=scroller.scrollLeft;scroller.style.cursor='grabbing'});
+    window.addEventListener('mouseup', ()=>{isDown=false;scroller.style.cursor='grab'});
+    scroller.addEventListener('mouseleave', ()=>isDown=false);
+    scroller.addEventListener('mousemove', (e)=>{if(!isDown) return; e.preventDefault(); const x=e.pageX-scroller.offsetLeft; const walk=(x-startX)*1.2; scroller.scrollLeft=scrollLeft-walk;});
+    scroller.style.cursor='grab';
+
+    // Header sombra al hacer scroll
+    const header = document.querySelector('header');
+    const onScroll=()=>{header.style.boxShadow = window.scrollY>6 ? '0 10px 30px rgba(0,0,0,.35)' : 'none'};
+    onScroll(); window.addEventListener('scroll', onScroll);
+  </script>
+</body>
+</html>

@@ -20,8 +20,7 @@
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight scroll-reveal text-reveal-words">
             <span class="word" style="animation-delay: 0.1s">Transforma</span> <span class="word"
               style="animation-delay: 0.2s">tu</span> <span class="text-primary word"
-              style="animation-delay: 0.3s">vocación</span> <span class="word" style="animation-delay: 0.4s">en</span>
-            <span class="text-secondary word" style="animation-delay: 0.5s">acción</span>
+              style="animation-delay: 0.3s">vocación</span> <span class="word" style="animation-delay: 0.4s">en</span> <span class="text-secondary word" style="animation-delay: 0.5s">acción</span>
           </h1>
 
           <p class="text-lg md:text-xl text-white/90 max-w-2xl scroll-reveal-stagger" style="animation-delay: 0.6s">
@@ -82,8 +81,7 @@
                   style="animation-delay: 0.4s">Ruray</span><span class="word" style="animation-delay: 0.5s">?</span>
               </h2>
               <p class="text-lg md:text-xl text-gray-600 scroll-reveal-stagger" style="animation-delay: 0.6s">
-                Somos un programa de voluntariado universitario que busca generar impacto social, cultural, ambiental y
-                digital, potenciando el desarrollo humano y profesional de nuestros voluntarios.
+                El voluntariado Munay Ruray es un programa para jóvenes universitarios que busca fortalecer su desarrollo profesional y humano mediante experiencias prácticas en proyectos sociales, comunitarios, ambientales y digitales.
               </p>
             </div>
 
@@ -312,7 +310,7 @@
     </section>
 
     <!-- Botón flotante móvil -->
-    <div class="floating-cta">
+    <!-- <div class="floating-cta">
       <nuxt-link to="/unete"
         class="bg-primary text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 hover-scale">
         <span>Postula</span>
@@ -320,7 +318,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>
       </nuxt-link>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -343,7 +341,7 @@ useHead({
 let scrollAnimationFrame = null
 
 const initScrollAnimations = () => {
-  if (process.client) {
+  if (import.meta.client) {
     // Intersection Observer para animaciones de scroll
     const observerOptions = {
       threshold: 0.1,
@@ -377,7 +375,7 @@ const initScrollAnimations = () => {
       if (scrollAnimationFrame) return
 
       scrollAnimationFrame = requestAnimationFrame(() => {
-        const scrolled = window.pageYOffset
+        const scrolled = window.scrollY
         const parallaxElements = document.querySelectorAll('.parallax-element')
 
         parallaxElements.forEach((element, index) => {

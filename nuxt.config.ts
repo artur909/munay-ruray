@@ -22,7 +22,8 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#00BFA6' },
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: 'Munay Ruray' },
-        { name: 'twitter:card', content: 'summary_large_image' }
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'robots', content: 'noindex, nofollow' }
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },

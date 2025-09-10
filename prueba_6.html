@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IMB Institute — Rediseño orientado a conversión</title>
+  <meta name="description" content="Formación con cohortes en vivo, certificación y proyectos aplicados. Inscripciones abiertas, cupos limitados." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0d0f;    /* oscuro base */
+      --card:#111316;  /* cards */
+      --muted:#9aa3a9; 
+      --ink:#eef2f3;   
+      --accent-blue:#0ea5e9;
+      --cta:#FF6B35;   /* naranja acción */
+      --cta-press:#e0552a;
+      --glass:rgba(255,255,255,0.04);
+      --line:rgba(255,255,255,0.06);
+      --radius:18px;
+      --shadow:0 20px 60px rgba(0,0,0,.6);
+      font-size:16px; /* mobile-first */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+    img{display:block;max-width:100%}
+    a{color:inherit}
+    .container{width:min(1200px,calc(100% - 2rem));margin:0 auto}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:80;background:linear-gradient(180deg,rgba(11,13,15,.85),rgba(11,13,15,.6));backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+    .top{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700}
+    .brand .mark{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--accent-blue),#2dd4bf)}
+    nav{display:flex;align-items:center;gap:10px}
+    nav a{color:var(--muted);padding:.45rem .7rem;border-radius:8px;font-weight:600}
+    nav a:hover{color:var(--ink);background:rgba(255,255,255,.02)}
+    .cta{background:var(--cta);color:#0b0b0b;padding:.7rem 1rem;border-radius:10px;font-weight:800;box-shadow:0 10px 30px rgba(255,107,53,.12)}
+
+    /* HERO (fuerte impacto con gradiente) */
+    .hero{position:relative;padding:68px 0 42px;overflow:hidden}
+    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(800px 400px at 10% 20%, rgba(255,107,53,.16), transparent), radial-gradient(900px 500px at 90% 70%, rgba(14,165,233,.08), transparent);mix-blend-mode:screen;pointer-events:none}
+    .hero-grid{display:grid;grid-template-columns:1fr 420px;gap:32px;align-items:center}
+    .eyebrow{color:var(--muted);text-transform:uppercase;letter-spacing:.18em;font-size:.82rem}
+    h1{font-family:Playfair Display,serif;font-size:clamp(34px,6vw,56px);margin:.5rem 0 0;line-height:1.02}
+    p.lead{color:#d6dde0;max-width:56ch;margin-top:12px}
+
+    .hero-actions{display:flex;gap:12px;margin-top:18px}
+    .btn{padding:.9rem 1.1rem;border-radius:999px;font-weight:800;border:1px solid rgba(255,255,255,.04)}
+    .btn-primary{background:var(--cta);color:#0b0b0b}
+    .btn-secondary{background:transparent;color:var(--ink);border:1px solid rgba(255,255,255,.06)}
+
+    .hero-kpis{display:flex;gap:12px;margin-top:20px}
+    .kpi{background:var(--card);padding:.6rem .9rem;border-radius:999px;border:1px solid var(--line);color:var(--muted);font-weight:700}
+
+    /* Badge urgencia */
+    .urgency{display:inline-flex;align-items:center;gap:8px;padding:.45rem .7rem;border-radius:999px;background:linear-gradient(90deg,var(--cta),#ff9a6f);color:#0b0b0b;font-weight:700}
+
+    /* media right - floating logo */
+    .media-card{background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);border-radius:18px;padding:18px;border:1px solid var(--line);box-shadow:var(--shadow)}
+    .media-card .big-logo{height:220px;display:flex;align-items:center;justify-content:center;font-size:64px;color:rgba(255,255,255,.06);opacity:.95}
+
+    /* Client logos row */
+    .clients{display:flex;gap:18px;align-items:center;justify-content:center;padding:18px 0;opacity:.9}
+    .clients img{height:28px;filter:grayscale(.1) brightness(.95);opacity:.95}
+
+    /* White card (Seamless onboarding) */
+    .white-panel{background:#f6f7f8;color:#0b0b0b;padding:28px;border-radius:22px;margin-top:-40px;box-shadow:0 20px 40px rgba(2,6,8,.25)}
+    .white-panel h2{font-family:Playfair Display,serif;color:#0b0b0b}
+    .three-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:18px}
+    .feature{background:transparent;padding:12px;border-radius:12px}
+    .feature p{margin:8px 0 0;color:#334041}
+
+    /* Dark services section with big mark */
+    .services{display:grid;grid-template-columns:1fr 360px;gap:26px;align-items:center;padding:46px 0}
+    .services-list{display:grid;gap:12px}
+    .services-list li{list-style:none;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.01),transparent);border-radius:12px;border:1px solid var(--line)}
+    .big-mark{display:flex;align-items:center;justify-content:center}
+    .big-mark svg{width:260px;height:260px;opacity:.12}
+
+    /* CTA band */
+    .cta-band{padding:46px 0;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+    .cta-band h3{font-size:28px;margin:0 0 12px}
+    .cta-band .btn{min-width:180px}
+
+    /* SEO chart */
+    .chart{display:grid;grid-template-columns:1fr 400px;gap:26px;align-items:center;padding:46px 0}
+    .chart-legend{display:flex;gap:10px;flex-wrap:wrap}
+    .legend-item{display:flex;align-items:center;gap:8px}
+    .line-swatch{width:14px;height:6px;border-radius:4px}
+
+    /* Conversion rate panel (light) */
+    .conversion-panel{background:#fbfbfc;color:#0b0b0b;padding:38px;border-radius:20px;margin:36px 0}
+    .conv-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+    .conv-item{padding:12px}
+
+    /* Flow diagram */
+    .flow{background:linear-gradient(180deg,rgba(255,255,255,.01),transparent);padding:28px;border-radius:16px;border:1px solid var(--line)}
+
+    /* Metrics */
+    .metrics{display:grid;grid-template-columns:1fr 1fr;gap:26px;padding:46px 0;align-items:center}
+    .gauge{background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--line)}
+    .bars{display:flex;gap:12px}
+    .bar{background:linear-gradient(90deg,var(--accent-blue),#06b6d4);height:12px;border-radius:999px}
+
+    /* Work in action */
+    .work{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:36px 0}
+    .work .card{background:transparent;border:1px solid var(--line);padding:18px;border-radius:12px}
+
+    /* Final CTAs + contact form */
+    .final{display:grid;grid-template-columns:1fr 420px;gap:26px;padding:46px 0}
+    .lead-form{background:#f6f7f8;color:#0b0b0b;padding:22px;border-radius:18px}
+    form .input{width:100%;padding:.8rem;border-radius:10px;border:1px solid rgba(0,0,0,.06);margin-bottom:10px}
+
+    /* Footer */
+    footer{padding:26px 0;border-top:1px solid rgba(255,255,255,.03);color:var(--muted)}
+
+    /* Misc */
+    .toast{position:fixed;left:16px;bottom:88px;background:rgba(0,0,0,.6);padding:10px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.06);z-index:100;display:none}
+    .chat{position:fixed;right:18px;bottom:18px;background:linear-gradient(90deg,var(--accent-blue),#06b6d4);color:#fff;padding:12px 14px;border-radius:999px;box-shadow:0 10px 30px rgba(3,105,161,.18);z-index:100}
+
+    /* Responsive */
+    @media (max-width:1000px){
+      .hero-grid{grid-template-columns:1fr}
+      .white-panel{margin-top:18px}
+      .three-cols{grid-template-columns:1fr}
+      .services{grid-template-columns:1fr}
+      .chart{grid-template-columns:1fr}
+      .metrics{grid-template-columns:1fr}
+      .final{grid-template-columns:1fr}
+    }
+    @media (max-width:560px){:root{font-size:15px} .btn{min-height:48px;padding:0 1rem}}
+
+    /* Small interactions */
+    .btn-primary:hover{transform:translateY(-3px)}
+    .course-card, .work .card{transition:transform .28s ease,box-shadow .28s ease}
+    .course-card:hover, .work .card:hover{transform:translateY(-8px);box-shadow:0 18px 50px rgba(0,0,0,.6)}
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="container top">
+      <div class="brand"><div class="mark" aria-hidden></div><div>IMB</div></div>
+      <nav aria-label="principal">
+        <a href="#capacitacion">Capacitación</a>
+        <a href="#lanzamientos">Cursos</a>
+        <a href="#areas">Áreas</a>
+        <a href="#testimonios">Historias</a>
+        <a href="#contacto" class="cta">Contactar</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Formación especializada</div>
+          <h1>Rankea más alto. Convierte mejor. Lidera tu carrera con IMB.</h1>
+          <p class="lead">Programas con cohortes en vivo, proyectos aplicados y certificación que suma en tu CV. Diseñados para profesionales en calidad, mantenimiento, tecnología y gestión.</p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#lanzamientos">Asegurar mi cupo</a>
+            <a class="btn btn-secondary" href="#contacto">Solicitar información</a>
+          </div>
+
+          <div class="hero-kpis" aria-hidden>
+            <div class="kpi">+8,500 alumni</div>
+            <div class="kpi">4.9/5 satisfacción</div>
+            <div class="kpi">+25 cohortes</div>
+          </div>
+
+          <div style="margin-top:18px">
+            <span class="urgency">Próxima cohorte: 17 Jun — <strong style="margin-left:8px">12 cupos</strong></span>
+          </div>
+        </div>
+
+        <aside class="media-card" aria-hidden>
+          <div class="big-logo">▦</div>
+          <div style="margin-top:12px;text-align:center;color:var(--muted)">Video testimonial — 60s</div>
+        </aside>
+      </div>
+
+      <!-- clients -->
+      <div class="container clients" aria-hidden>
+        <img src="https://placehold.co/120x28?text=DAZZ" alt="cliente" loading="lazy">
+        <img src="https://placehold.co/120x28?text=TRILIO" alt="cliente" loading="lazy">
+        <img src="https://placehold.co/120x28?text=Offizzi" alt="cliente" loading="lazy">
+        <img src="https://placehold.co/120x28?text=VOLT" alt="cliente" loading="lazy">
+        <img src="https://placehold.co/120x28?text=Cayosoft" alt="cliente" loading="lazy">
+      </div>
+    </section>
+
+    <!-- SEAMLESS ONBOARDING (WHITE PANEL) -->
+    <section>
+      <div class="container">
+        <div class="white-panel">
+          <h2>Seamless onboarding, resultados sobresalientes</h2>
+          <p style="margin-top:8px;color:#556">Programas diseñados para convertir conocimiento en resultados medibles. Aprendizaje práctico, mentoría y evaluación por competencias.</p>
+          <div class="three-cols">
+            <div class="feature"><strong>Proyectos aplicados</strong><p>Entrega de casos reales y resultados medibles en tu área.</p></div>
+            <div class="feature"><strong>Mentoría personalizada</strong><p>Seguimiento con mentores expertos y feedback continuo.</p></div>
+            <div class="feature"><strong>Certificación</strong><p>Credenciales con reconocimiento académico y empresarial.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES + BIG MARK -->
+    <section class="services container" id="capacitacion">
+      <div>
+        <h3 style="margin:0 0 12px;font-family:Playfair Display,serif">Más que marketing digital — formación aplicada</h3>
+        <ul class="services-list">
+          <li>Search Engine Optimization</li>
+          <li>Web Dev & Maintenance</li>
+          <li>Conversion Rate Optimization</li>
+          <li>Paid Search Advertising</li>
+        </ul>
+      </div>
+      <div class="big-mark">
+        <!-- símbolo grande similar al de la referencia -->
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <g transform="translate(100,100)">
+            <path d="M-40-40 L-10-40 L-10-10 L40-10 L40 10 L10 10 L10 40 L-10 40 L-10 10 L-40 10 Z" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- CTA band -->
+    <section class="cta-band">
+      <div class="container">
+        <h3>Find the shortest path to revenue with IMB</h3>
+        <p class="muted">Soluciones prácticas que conectan aprendizaje y resultados.</p>
+        <div style="margin-top:18px"><a class="btn btn-primary" href="#contacto">Reservar una call</a></div>
+      </div>
+    </section>
+
+    <!-- SEO Graph -->
+    <section class="chart container" aria-label="SEO chart">
+      <div>
+        <h4>Search Engine Optimization</h4>
+        <p class="muted">Aumenta tu visibilidad y conversiones con estrategias probadas.</p>
+        <div style="margin-top:18px">
+          <!-- simple svg chart -->
+          <svg id="seoChart" viewBox="0 0 700 260" width="100%" height="260" aria-hidden>
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#ff7b59"/><stop offset="1" stop-color="#ffb88f"/></linearGradient>
+              <linearGradient id="g2" x1="0" x2="1"><stop offset="0" stop-color="#06b6d4"/><stop offset="1" stop-color="#0ea5e9"/></linearGradient>
+              <linearGradient id="g3" x1="0" x2="1"><stop offset="0" stop-color="#ffd166"/><stop offset="1" stop-color="#ff8a5b"/></linearGradient>
+            </defs>
+            <rect x="0" y="0" width="700" height="260" fill="transparent" />
+            <!-- grid -->
+            <g stroke="rgba(255,255,255,.03)">
+              <line x1="0" x2="700" y1="40" y2="40"></line>
+              <line x1="0" x2="700" y1="130" y2="130"></line>
+              <line x1="0" x2="700" y1="220" y2="220"></line>
+            </g>
+            <!-- paths (animated via JS) -->
+            <path id="p1" d="M40 210 C140 180 240 170 340 120 C440 70 540 70 640 50" stroke="url(#g1)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+            <path id="p2" d="M40 220 C140 200 240 190 340 160 C440 140 540 100 640 80" stroke="url(#g2)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+            <circle cx="340" cy="120" r="4" fill="#fff"/>
+            <g fill="#fff" font-size="12">
+              <text x="50" y="18">Aumento de conversión</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div>
+        <h5>Beneficios</h5>
+        <ul style="color:var(--muted);margin-top:12px">
+          <li>Incrementa leads calificados</li>
+          <li>Mejora experiencia y Core Web Vitals</li>
+          <li>Optimización basada en datos</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Conversion Rate Optimization (light panel) -->
+    <section class="conversion-panel container">
+      <h3>Conversion Rate Optimization</h3>
+      <div class="conv-grid">
+        <div class="conv-item"><h4>Optimize</h4><p class="muted">Reducir fricción y mejorar funnels con experimentación.</p></div>
+        <div class="conv-item"><h4>Engage</h4><p class="muted">Diseñar experiencias que aumenten el valor de cada visita.</p></div>
+        <div class="conv-item"><h4>Profit</h4><p class="muted">Traducir mejoras en ingresos medibles.</p></div>
+      </div>
+    </section>
+
+    <!-- Paid search flow diagram -->
+    <section class="container" style="padding-bottom:24px">
+      <div class="flow">
+        <h4>Paid Search Advertising</h4>
+        <p class="muted">Estrategia y testing para escalar canales pagados.</p>
+        <div style="margin-top:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <div style="flex:1;min-width:280px">
+            <svg viewBox="0 0 600 120" width="100%" height="120" aria-hidden>
+              <g stroke="rgba(0,0,0,.08)" fill="none">
+                <rect x="10" y="10" width="120" height="40" rx="8" stroke="rgba(255,255,255,.04)"/>
+                <rect x="190" y="10" width="120" height="40" rx="8" stroke="rgba(255,255,255,.04)"/>
+                <rect x="370" y="10" width="120" height="40" rx="8" stroke="rgba(255,255,255,.04)"/>
+                <path d="M130 30 L190 30" stroke="rgba(255,255,255,.03)" stroke-width="2" marker-end="url(#arr)"/>
+                <path d="M310 30 L370 30" stroke="rgba(255,255,255,.03)" stroke-width="2" marker-end="url(#arr)"/>
+              </g>
+            </svg>
+          </div>
+          <div style="flex:1;min-width:220px;color:var(--muted)">A/B testing · Landing pages · Conversion optimization</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Metrics: Gauge + bars -->
+    <section class="metrics container">
+      <div class="gauge">
+        <h4>Health score</h4>
+        <div style="display:flex;align-items:center;gap:14px;margin-top:12px">
+          <div style="flex:1">
+            <svg viewBox="0 0 200 100" width="100%" height="100" aria-hidden>
+              <defs>
+                <linearGradient id="gauge" x1="0" x2="1"><stop offset="0" stop-color="#06b6d4"/><stop offset="1" stop-color="#0ea5e9"/></linearGradient>
+              </defs>
+              <path d="M10 90 A80 80 0 0 1 190 90" stroke="#1f2937" stroke-width="18" fill="none" stroke-linecap="round"/>
+              <path id="gaugeArc" d="M10 90 A80 80 0 0 1 110 30" stroke="url(#gauge)" stroke-width="18" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div style="width:120px;text-align:center">
+            <div style="font-size:28px;font-weight:800">96%</div>
+            <div class="muted">Excellent</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h4>Technical issues</h4>
+        <div style="display:flex;gap:12px;margin-top:12px">
+          <div style="flex:1;background:var(--card);padding:12px;border-radius:10px;border:1px solid var(--line)">
+            <div style="font-weight:800">185</div>
+            <div class="muted">Pages scanned</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+            <div style="background:var(--card);padding:12px;border-radius:8px;border:1px solid var(--line)"><div style="font-weight:800">15%</div><div class="muted">High</div></div>
+            <div style="background:var(--card);padding:12px;border-radius:8px;border:1px solid var(--line)"><div style="font-weight:800">4%</div><div class="muted">Critical</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Work in action + CTA -->
+    <section class="work container">
+      <div class="card"><h4>Gain more with less</h4><p class="muted">Optimiza recursos y acelera resultados con nuestro enfoque.</p><div style="margin-top:12px"><a class="btn btn-primary" href="#contacto">Reservar call</a></div></div>
+      <div style="display:grid;gap:12px">
+        <div class="card"> <strong>Excellent service at a competitive price</strong><p class="muted">Casos reales y métricas.</p></div>
+        <div class="card"> <strong>High quality work</strong><p class="muted">Entrega y seguimiento.</p></div>
+      </div>
+    </section>
+
+    <!-- Final: Let's get started + form (mimic reference) -->
+    <section class="final container">
+      <div class="lead-form">
+        <h3>Let's get started</h3>
+        <p class="muted">hola@imbinstitute.com</p>
+      </div>
+      <div class="lead-form">
+        <form onsubmit="event.preventDefault();alert('Gracias — nos contactaremos pronto')">
+          <label class="muted">Empresa</label>
+          <input class="input" placeholder="Empresa" required>
+          <label class="muted">Nombre</label>
+          <input class="input" placeholder="Nombre" required>
+          <label class="muted">Correo</label>
+          <input class="input" type="email" placeholder="tu@email.com" required>
+          <button class="btn btn-primary" style="width:100%;margin-top:10px">Request a call</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Testimonials carousel -->
+    <section class="container" style="padding-bottom:46px">
+      <h3>Lo que dicen nuestros alumnos</h3>
+      <div id="carousel" style="display:flex;gap:12px;overflow:hidden;margin-top:12px">
+        <div class="testimonial" style="min-width:320px">“Aumenté mi salario 40%” — <small class="muted">Juan</small></div>
+        <div class="testimonial" style="min-width:320px">“Implementamos el proyecto en planta” — <small class="muted">María</small></div>
+        <div class="testimonial" style="min-width:320px">“Mentoría excelente” — <small class="muted">Carlos</small></div>
+      </div>
+    </section>
+
+    <!-- Contact Footer -->
+    <section id="contacto" style="padding-bottom:40px">
+      <div class="container">
+        <div style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center">
+          <div>
+            <strong>IMB Institute</strong>
+            <div class="muted">info@imbinstitute.com · +51 9XX XXX XXX</div>
+          </div>
+          <div class="muted">© <span id="yr"></span> Derechos reservados</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating chat + toast -->
+  <div class="chat" role="button" onclick="window.open('https://wa.me/51999999999','_blank')">💬 Habla con un asesor</div>
+  <div id="toast" class="toast">Alguien se inscribió hace 2 horas</div>
+
+  <script>
+    // year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // simple seo chart draw effect
+    document.addEventListener('DOMContentLoaded',()=>{
+      const p1 = document.getElementById('p1');
+      p1.style.strokeDasharray = p1.getTotalLength();
+      p1.style.strokeDashoffset = p1.getTotalLength();
+      setTimeout(()=>{ p1.style.transition = 'stroke-dashoffset 1.6s ease-out'; p1.style.strokeDashoffset = '0'; },300);
+
+      // carousel auto scroll
+      const car = document.getElementById('carousel'); let ci=0;
+      setInterval(()=>{ ci = (ci+1) % car.children.length; car.scrollTo({left:car.children[ci].offsetLeft,behavior:'smooth'}); },4000);
+
+      // toast social proof
+      const toast = document.getElementById('toast'); setInterval(()=>{ toast.style.display='block'; setTimeout(()=>toast.style.display='none',3800); },12000);
+
+      // gauge animation
+      const gauge = document.getElementById('gaugeArc'); if(gauge){ setTimeout(()=>{ gauge.style.transition='stroke-dashoffset 1.2s ease'; const len = gauge.getTotalLength(); gauge.style.strokeDasharray=len; gauge.style.strokeDashoffset=len*0.36; },600); }
+
+    });
+
+    // small accessibility: ensure CTAs min-height on touch
+    if(window.innerWidth < 560){ document.querySelectorAll('.btn').forEach(b=>b.style.minHeight='48px'); }
+  </script>
+</body>
+</html>

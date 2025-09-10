@@ -23,9 +23,7 @@
         <div class="max-w-4xl mx-auto text-center">
           <h2 class="mb-8">Quiénes Somos</h2>
           <p class="text-xl text-gray-600 mb-12">
-            Somos una iniciativa universitaria comprometida con el desarrollo social que busca transformar la vida de
-            las personas a través del voluntariado. Creemos en el poder de la acción colectiva y en el impacto que
-            podemos generar cuando unimos nuestras fuerzas por un propósito común.
+            El voluntariado Munay Ruray es un programa para jóvenes universitarios que busca fortalecer su desarrollo profesional y humano mediante experiencias prácticas en proyectos sociales, comunitarios, ambientales y digitales.
           </p>
         </div>
       </div>
@@ -52,8 +50,10 @@
             <h3 class="text-2xl font-bold text-center mb-4 group-hover:text-primary transition-colors duration-500">
               Misión</h3>
             <p class="text-gray-600 text-center">
-              Generar impacto social positivo a través del voluntariado universitario, potenciando el desarrollo humano
-              y profesional de nuestros participantes.
+              Brindamos a jóvenes universitarios experiencias reales y formativas que 
+fortalezcan sus competencias profesionales, habilidades blandas y compromiso social, 
+preparándolos para afrontar con seguridad, humanidad y responsabilidad los desafíos 
+del mundo laboral.
             </p>
           </div>
 
@@ -73,8 +73,9 @@
             <h3 class="text-2xl font-bold text-center mb-4 group-hover:text-secondary transition-colors duration-500">
               Visión</h3>
             <p class="text-gray-600 text-center">
-              Ser el programa líder en voluntariado universitario, reconocido por su impacto transformador en la
-              sociedad y en el desarrollo integral de los voluntarios.
+              Ser un voluntariado reconocido por impulsar una nueva generación de profesionales 
+empáticos, comprometidos con su carrera, conscientes del valor de su rol en la sociedad y 
+preparados para desenvolverse en entornos laborales cambiantes.
             </p>
           </div>
 
@@ -92,8 +93,9 @@
             <h3 class="text-2xl font-bold text-center mb-4 group-hover:text-primary transition-colors duration-500">
               Propósito</h3>
             <p class="text-gray-600 text-center">
-              Crear un espacio donde los universitarios puedan desarrollar su potencial mientras generan un impacto
-              positivo en la sociedad.
+              Impulsar el desarrollo personal, profesional y social de los voluntarios universitarios 
+mediante actividades formativas, comunitarias y creativas que refuercen su identidad 
+profesional, sus habilidades blandas y su preparación para el mundo laboral.
             </p>
           </div>
         </div>
@@ -150,7 +152,7 @@
         <h2 class="text-center mb-12">Aliados Estratégicos</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 items-center justify-items-center">
           <div v-for="(aliado, index) in aliados" :key="index"
-            class="w-40 h-40 bg-gray-50 rounded-2xl p-4 flex items-center justify-center hover:shadow-lg hover:scale-105 transition-all duration-300">
+            class="w-auto  bg-gray-50 rounded-2xl p-4 flex items-center justify-center hover:shadow-lg hover:scale-105 transition-all duration-300">
             <img :src="aliado.logo" :alt="aliado.nombre" class="max-w-full max-h-full object-contain" />
           </div>
         </div>
@@ -245,19 +247,19 @@ const valores = [
 const aliados = [
   {
     nombre: 'Universidad Nacional Mayor de San Marcos',
-    logo: 'https://placehold.co/200x200'
+    logo: 'https://placehold.co/400x200'
   },
   {
     nombre: 'Pontificia Universidad Católica del Perú',
-    logo: 'https://placehold.co/200x200'
+    logo: 'https://placehold.co/400x200'
   },
   {
     nombre: 'Universidad Nacional de Ingeniería',
-    logo: 'https://placehold.co/200x200'
+    logo: 'https://placehold.co/400x200'
   },
   {
     nombre: 'Universidad del Pacífico',
-    logo: 'https://placehold.co/200x200'
+    logo: 'https://placehold.co/400x200'
   }
 ]
 

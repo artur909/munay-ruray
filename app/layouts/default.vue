@@ -37,10 +37,10 @@
     <main class="pt-20">
       <slot />
     </main>
-
     <!-- Botón flotante CTA para móviles -->
+    <!-- class="bg-primary text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 hover-scale" -->
     <nuxt-link to="/unete" 
-      class="floating-cta bg-turquoise text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2">
+      class="floating-cta bg-primary text-white px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2">
       <span>Postula</span>
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />

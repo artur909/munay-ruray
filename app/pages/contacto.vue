@@ -76,7 +76,7 @@
                   </div>
                   <div>
                     <h3 class="font-bold mb-1">Ubicación</h3>
-                    <p class="text-gray-600">Lima, Perú</p>
+                    <p class="text-gray-600">Arequipa, Perú</p>
                   </div>
                 </div>
               </div>
