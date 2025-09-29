@@ -22,7 +22,26 @@
       <div class="container-full">
         <div class="max-w-6xl mx-auto">
           <h2 class="text-2xl md:text-3xl font-bold text-center mb-12">Experiencia Destacada</h2>
-          <div class="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+          
+          <!-- Loading state -->
+          <div v-if="loading && !experienciaDestacada" class="bg-gray-100 rounded-3xl overflow-hidden animate-pulse">
+            <div class="grid lg:grid-cols-2 gap-0">
+              <div class="aspect-[4/3] lg:aspect-auto bg-gray-300"></div>
+              <div class="p-8 md:p-12 space-y-4">
+                <div class="h-4 bg-gray-300 rounded w-24"></div>
+                <div class="h-8 bg-gray-300 rounded w-3/4"></div>
+                <div class="space-y-2">
+                  <div class="h-4 bg-gray-300 rounded"></div>
+                  <div class="h-4 bg-gray-300 rounded w-5/6"></div>
+                  <div class="h-4 bg-gray-300 rounded w-4/6"></div>
+                </div>
+                <div class="h-6 bg-gray-300 rounded w-40"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Experiencia destacada -->
+          <div v-else-if="experienciaDestacada" class="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div class="grid lg:grid-cols-2 gap-0">
               <div class="aspect-[4/3] lg:aspect-auto">
                 <img :src="experienciaDestacada.cover" :alt="experienciaDestacada.title"
@@ -40,6 +59,16 @@
                   </svg>
                 </nuxt-link>
               </div>
+            </div>
+          </div>
+
+          <!-- Error state -->
+          <div v-else-if="error" class="text-center py-12">
+            <div class="text-gray-500 mb-4">
+              <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <p>No se pudo cargar la experiencia destacada</p>
             </div>
           </div>
         </div>
@@ -63,12 +92,31 @@
               @click="filtroActivo = categoria"
               :class="['px-6 py-2 rounded-full font-semibold transition-colors capitalize', 
                 filtroActivo === categoria ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100']">
-              {{ categoria }}
+              {{ getCategoriaLabel(categoria) }}
             </button>
           </div>
 
+          <!-- Loading state para experiencias -->
+          <div v-if="loading && experiencias.length === 0" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div v-for="i in 6" :key="i" class="bg-white rounded-2xl overflow-hidden shadow-md animate-pulse">
+              <div class="aspect-[4/3] bg-gray-300"></div>
+              <div class="p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                  <div class="h-6 bg-gray-300 rounded-full w-20"></div>
+                  <div class="h-4 bg-gray-300 rounded w-16"></div>
+                </div>
+                <div class="h-6 bg-gray-300 rounded w-3/4"></div>
+                <div class="space-y-2">
+                  <div class="h-4 bg-gray-300 rounded"></div>
+                  <div class="h-4 bg-gray-300 rounded w-5/6"></div>
+                </div>
+                <div class="h-6 bg-gray-300 rounded w-24"></div>
+              </div>
+            </div>
+          </div>
+
           <!-- Grid de experiencias -->
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div v-else-if="experienciasFiltradas.length > 0" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <article v-for="experiencia in experienciasFiltradas" :key="experiencia.slug"
               class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group">
               <div class="aspect-[4/3] overflow-hidden">
@@ -78,7 +126,7 @@
               <div class="p-6">
                 <div class="flex items-center justify-between mb-3">
                   <span class="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full capitalize">
-                    {{ experiencia.category }}
+                    {{ getCategoriaLabel(experiencia.category) }}
                   </span>
                   <time class="text-sm text-gray-500">{{ experiencia.date }}</time>
                 </div>
@@ -95,6 +143,17 @@
                 </nuxt-link>
               </div>
             </article>
+          </div>
+
+          <!-- Empty state -->
+          <div v-else-if="!loading" class="text-center py-12">
+            <div class="text-gray-500 mb-4">
+              <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+              </svg>
+              <p class="text-lg font-medium">No hay experiencias disponibles</p>
+              <p class="text-sm">Pronto compartiremos nuevas historias inspiradoras</p>
+            </div>
           </div>
         </div>
       </div>
@@ -154,18 +213,57 @@ useHead({
   ]
 })
 
-// Usar el composable de experiencias
-const { getExperienciaDestacada, getCategorias, getExperienciasFiltradas } = useExperiencias()
+// Usar el composable de experiencias API
+const { 
+  experiencias,
+  experienciaDestacada,
+  categorias,
+  loading,
+  error,
+  fetchExperiencias,
+  fetchExperienciaDestacada,
+  fetchCategorias,
+  getExperienciasFiltradas,
+  getCategoriaLabel
+} = useExperienciasAPI()
 
 // Estado reactivo para filtros
 const filtroActivo = ref('todas')
 
-// Datos usando el composable
-const experienciaDestacada = computed(() => getExperienciaDestacada())
-const categorias = computed(() => getCategorias())
+// Datos computados
 const experienciasFiltradas = computed(() => 
   getExperienciasFiltradas(filtroActivo.value, true) // true para excluir featured
 )
+
+// Cargar datos al montar el componente
+onMounted(async () => {
+  try {
+    // Cargar experiencias y categorías en paralelo
+    await Promise.all([
+      fetchExperiencias({ limit: 20 }),
+      fetchExperienciaDestacada(),
+      fetchCategorias()
+    ])
+  } catch (err) {
+    console.error('Error loading experiencias:', err)
+  }
+})
+
+// Watcher para filtros
+watch(filtroActivo, async (newFilter) => {
+  if (newFilter !== 'todas') {
+    await fetchExperiencias({ 
+      category: newFilter, 
+      excludeFeatured: true,
+      limit: 20 
+    })
+  } else {
+    await fetchExperiencias({ 
+      excludeFeatured: true,
+      limit: 20 
+    })
+  }
+})
 
 // Testimonios rápidos
 const testimoniosRapidos = [

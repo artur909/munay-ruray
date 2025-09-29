@@ -1,7 +1,32 @@
 <template>
   <div class="min-h-screen bg-white">
+    <!-- Loading State -->
+    <div v-if="loading" class="min-h-screen flex items-center justify-center">
+      <div class="text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        <p class="text-gray-600">Cargando experiencia...</p>
+      </div>
+    </div>
+
+    <!-- Not Found State -->
+    <div v-else-if="notFound || !experience" class="min-h-screen flex items-center justify-center">
+      <div class="text-center max-w-md mx-auto px-4">
+        <svg class="w-24 h-24 text-gray-400 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <h1 class="text-2xl font-bold text-gray-900 mb-4">Experiencia no encontrada</h1>
+        <p class="text-gray-600 mb-8">La experiencia que buscas no existe o ha sido eliminada.</p>
+        <nuxt-link to="/experiencias" class="cta-enhanced">
+          <span>Ver todas las experiencias</span>
+          <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </nuxt-link>
+      </div>
+    </div>
+
     <!-- Hero Section - Consistente con el diseño principal -->
-    <section class="relative min-h-screen overflow-hidden">
+    <section v-else class="relative min-h-screen overflow-hidden">
       <!-- Imagen de fondo -->
       <div class="absolute inset-0 z-0">
         <img :src="experience.cover" :alt="experience.title" class="w-full h-full object-cover" />
@@ -35,7 +60,7 @@
           <div class="scroll-reveal" style="animation-delay: 0.4s">
             <span
               class="inline-block bg-primary/20 text-primary-light px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-sm border border-primary/30">
-              {{ experience.category || 'Experiencia' }}
+              {{ getCategoriaLabel(experience.category) || 'Experiencia' }}
             </span>
           </div>
 
@@ -269,7 +294,20 @@
               <!-- Experiencias relacionadas -->
               <div class="bg-white border border-gray-200 rounded-2xl p-8 scroll-reveal card-enhanced relative z-10">
                 <h3 class="text-xl font-bold mb-6 text-gray-900">Experiencias relacionadas</h3>
-                <div class="space-y-4">
+                
+                <!-- Loading state para relacionadas -->
+                <div v-if="relatedExperiences.length === 0" class="space-y-4">
+                  <div v-for="i in 3" :key="i" class="flex gap-4 p-4 animate-pulse">
+                    <div class="w-16 h-16 bg-gray-300 rounded-lg flex-shrink-0"></div>
+                    <div class="flex-1 space-y-2">
+                      <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+                      <div class="h-3 bg-gray-300 rounded w-1/2"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Experiencias relacionadas -->
+                <div v-else class="space-y-4">
                   <div v-for="related in relatedExperiences" :key="related.slug"
                     class="group cursor-pointer relative z-20">
                     <nuxt-link :to="`/experiencias/${related.slug}`"
@@ -379,26 +417,39 @@ const slug = route.params.experience
 const galleryModalOpen = ref(false)
 const currentGalleryIndex = ref(0)
 
-// Usar el composable de experiencias
-const { getExperienciaBySlug, getRelatedExperiencias } = useExperiencias()
+// Usar el composable de experiencias API
+const { 
+  loading,
+  error,
+  fetchExperienciaBySlug,
+  fetchExperienciasRelacionadas,
+  getCategoriaLabel
+} = useExperienciasAPI()
 
-// Obtener la experiencia usando el composable
-const experienceData = getExperienciaBySlug(slug)
-const experience = ref(experienceData || {
-  slug,
-  title: 'Experiencia no encontrada',
-  excerpt: '',
-  date: '',
-  author: '',
-  category: '',
-  cover: 'https://placehold.co/1600x900/6b7280/ffffff?text=No+Encontrada',
-  content: '<p>No se encontró la experiencia solicitada.</p>',
-  gallery: [],
-  video: null
+// Estado de la experiencia
+const experience = ref(null)
+const relatedExperiences = ref([])
+const notFound = ref(false)
+
+// Cargar experiencia al montar
+onMounted(async () => {
+  try {
+    const experienceData = await fetchExperienciaBySlug(slug)
+    
+    if (experienceData) {
+      experience.value = experienceData
+      
+      // Cargar experiencias relacionadas
+      const related = await fetchExperienciasRelacionadas(slug, 3)
+      relatedExperiences.value = related
+    } else {
+      notFound.value = true
+    }
+  } catch (err) {
+    console.error('Error loading experience:', err)
+    notFound.value = true
+  }
 })
-
-// Experiencias relacionadas usando el composable
-const relatedExperiences = computed(() => getRelatedExperiencias(slug, 3))
 
 // Animaciones de scroll y parallax (consistente con index.vue)
 let scrollAnimationFrame = null
@@ -506,23 +557,23 @@ const shareUrl = (network) => {
 
 // SEO dinámico
 useHead({
-  title: () => `${experience.value.title} - Munay Ruray`,
+  title: () => experience.value ? `${experience.value.title} - Munay Ruray` : 'Experiencia - Munay Ruray',
   meta: [
     {
       name: 'description',
-      content: () => experience.value.excerpt
+      content: () => experience.value?.excerpt || 'Experiencia de Munay Ruray'
     },
     {
       property: 'og:title',
-      content: () => experience.value.title
+      content: () => experience.value?.title || 'Experiencia - Munay Ruray'
     },
     {
       property: 'og:description',
-      content: () => experience.value.excerpt
+      content: () => experience.value?.excerpt || 'Experiencia de Munay Ruray'
     },
     {
       property: 'og:image',
-      content: () => experience.value.cover
+      content: () => experience.value?.cover || 'https://placehold.co/1200x630/02b2a2/ffffff?text=Munay+Ruray'
     }
   ]
 })

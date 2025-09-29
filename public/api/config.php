@@ -20,9 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Configuración de la base de datos
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'munay');
-define('DB_USER', 'roomstudio');
-define('DB_PASS', 'uxCXaroKV8sW7ZZ');
+define('DB_NAME', 'hxaxwpbd_munay_ruray');
+define('DB_USER', 'hxaxwpbd_munay');
+define('DB_PASS', 'hxaxwpbd_munay');
 define('DB_CHARSET', 'utf8mb4');
 
 // Rutas de archivos
