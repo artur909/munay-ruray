@@ -240,7 +240,7 @@ onMounted(async () => {
   try {
     // Cargar experiencias y categorías en paralelo
     await Promise.all([
-      fetchExperiencias({ limit: 20 }),
+      fetchExperiencias({ limit: 50, excludeFeatured: true }), // Cargar más experiencias para filtrado local
       fetchExperienciaDestacada(),
       fetchCategorias()
     ])
@@ -249,20 +249,11 @@ onMounted(async () => {
   }
 })
 
-// Watcher para filtros
-watch(filtroActivo, async (newFilter) => {
-  if (newFilter !== 'todas') {
-    await fetchExperiencias({ 
-      category: newFilter, 
-      excludeFeatured: true,
-      limit: 20 
-    })
-  } else {
-    await fetchExperiencias({ 
-      excludeFeatured: true,
-      limit: 20 
-    })
-  }
+// Watcher para filtros - ahora usa filtrado local
+watch(filtroActivo, (newFilter) => {
+  // El filtrado se hace automáticamente a través del computed experienciasFiltradas
+  // No necesitamos hacer nuevas llamadas a la API
+  console.log('Filtro cambiado a:', newFilter)
 })
 
 // Testimonios rápidos

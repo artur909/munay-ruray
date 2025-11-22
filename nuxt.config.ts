@@ -5,6 +5,15 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
+  
+  // Configuración de SSR y generación
+  ssr: true,
+  nitro: {
+    prerender: {
+      routes: ['/experiencias']
+    }
+  },
+  
   vite: {
     plugins: [
       tailwindcss(),

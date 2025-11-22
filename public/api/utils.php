@@ -293,6 +293,16 @@ function validatePostulacionData($data) {
         $errors[] = 'La carrera es requerida';
     }
 
+    // Validar edad si está presente
+    if (!empty($data['edad']) && (!is_numeric($data['edad']) || $data['edad'] < 16 || $data['edad'] > 100)) {
+        $errors[] = 'La edad debe ser un número válido entre 16 y 100 años';
+    }
+
+    // Validar año de estudio si está presente
+    if (!empty($data['anio_estudio']) && !in_array($data['anio_estudio'], ['1', '2', '3', '4', '5', '6', 'egresado'])) {
+        $errors[] = 'Año de estudio no válido';
+    }
+
     return $errors;
 }
 

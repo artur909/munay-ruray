@@ -7,6 +7,10 @@
   --color-rich-black: #0A0A0A;
   --color-antiflash-white: #f9fafb;
   --color-stone: #D1D1D1;
+  
+  /* Colores azules para el panel administrativo */
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
 
   --font-family-sans: Inter, system-ui, sans-serif;
   --font-family-display: Manrope, system-ui, sans-serif;

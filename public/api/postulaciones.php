@@ -1,89 +1,127 @@
 <?php
 require_once 'config.php';
-require_once 'utils.php';
+require_once 'auth.php';
+require_once 'controllers/PostulacionController.php';
 
-// Obtener método HTTP
+// Iniciar sesión
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Obtener método HTTP y acción
 $method = $_SERVER['REQUEST_METHOD'];
-$action = $_GET['action'] ?? '';
+$action = $_GET['action'] ?? 'list';
+$id = $_GET['id'] ?? null;
 
+// Verificar autenticación para operaciones de escritura y lectura administrativa
+if (in_array($method, ['POST', 'PUT', 'DELETE']) && !isAuthenticated()) {
+    ResponseView::unauthorized('Acceso no autorizado');
+}
+
+// Para operaciones GET administrativas también requerir autenticación
+if ($method === 'GET' && in_array($action, ['list', 'get', 'stats']) && !isAuthenticated()) {
+    ResponseView::unauthorized('Acceso no autorizado');
+}
+
+// Crear instancia del controlador
+$controller = new PostulacionController();
+
+// Enrutamiento basado en método HTTP y acción
 try {
     switch ($method) {
         case 'GET':
-            handleGetRequest($action, $pdo);
+            handleGetRequest($controller, $action, $id);
             break;
+            
         case 'POST':
-            handlePostRequest($action, $pdo);
+            $controller->store();
             break;
+            
         case 'PUT':
-            handlePutRequest($action, $pdo);
+            if (!$id) {
+                ResponseView::validationError(['ID requerido para actualización']);
+            }
+            handlePutRequest($controller, $action, $id);
             break;
+            
         case 'DELETE':
-            handleDeleteRequest($action, $pdo);
+            if (!$id) {
+                ResponseView::validationError(['ID requerido para eliminación']);
+            }
+            $controller->destroy($id);
             break;
+            
         default:
-            handleError('Método no permitido', 405);
+            ResponseView::methodNotAllowed();
     }
 } catch (Exception $e) {
-    handleError($e->getMessage(), 500);
+    ResponseView::serverError($e->getMessage());
 }
 
-// Manejar peticiones GET
-function handleGetRequest($action, $pdo) {
+/**
+ * Manejar peticiones GET
+ */
+function handleGetRequest($controller, $action, $id) {
     switch ($action) {
         case 'list':
-            getAllPostulaciones($pdo);
+            $controller->index();
             break;
+            
         case 'get':
-            getPostulacionById($pdo);
+            if (!$id) {
+                ResponseView::validationError(['ID requerido']);
+            }
+            $controller->show($id);
             break;
+            
         case 'stats':
-            getPostulacionesStats($pdo);
+            $controller->stats();
             break;
+            
         default:
-            getAllPostulaciones($pdo);
-            break;
+            ResponseView::error('Acción no válida', 400);
     }
 }
 
-// Manejar peticiones POST
-function handlePostRequest($action, $pdo) {
-    switch ($action) {
-        case 'create':
-        case '':
-            createPostulacion($pdo);
-            break;
-        default:
-            handleError('Acción no válida');
-    }
-}
-
-// Manejar peticiones PUT
-function handlePutRequest($action, $pdo) {
+/**
+ * Manejar peticiones PUT
+ */
+function handlePutRequest($controller, $action, $id) {
     switch ($action) {
         case 'update-status':
-            updatePostulacionStatus($pdo);
+            $controller->updateStatus($id);
             break;
-        case 'add-notes':
-            addNotesPostulacion($pdo);
+            
+        case 'add-note':
+            $controller->addNote($id);
             break;
+            
         default:
-            handleError('Acción no válida');
+            ResponseView::error('Acción no válida', 400);
     }
 }
 
-// Manejar peticiones DELETE
-function handleDeleteRequest($action, $pdo) {
+// === FUNCIONES GET ===
+function handleGet($action) {
     switch ($action) {
-        case 'delete':
-            deletePostulacion($pdo);
+        case 'list':
+        case '':
+            getPostulaciones();
+            break;
+        case 'get':
+            getPostulacion();
+            break;
+        case 'stats':
+            getStats();
             break;
         default:
-            handleError('Acción no válida');
+            getPostulaciones();
     }
 }
 
-// Obtener todas las postulaciones
-function getAllPostulaciones($pdo) {
+function getPostulaciones() {
+    $db = getDB();
+    
     try {
         $page = (int)($_GET['page'] ?? 1);
         $limit = (int)($_GET['limit'] ?? 20);
@@ -92,7 +130,7 @@ function getAllPostulaciones($pdo) {
         
         $offset = ($page - 1) * $limit;
         
-        // Construir query base
+        // Construir query
         $whereConditions = [];
         $params = [];
         
@@ -111,15 +149,16 @@ function getAllPostulaciones($pdo) {
         
         $whereClause = !empty($whereConditions) ? "WHERE " . implode(" AND ", $whereConditions) : "";
         
-        // Obtener total de registros
-        $countStmt = $pdo->prepare("SELECT COUNT(*) FROM postulaciones $whereClause");
+        // Obtener total
+        $countStmt = $db->prepare("SELECT COUNT(*) FROM postulaciones $whereClause");
         $countStmt->execute($params);
         $total = $countStmt->fetchColumn();
         
         // Obtener postulaciones paginadas
-        $stmt = $pdo->prepare("
+        $stmt = $db->prepare("
             SELECT id, nombres, email, telefono, universidad, carrera, anio_estudio, 
-                   edad, disponibilidad,cv_filename, cv_original_name, status, created_at, updated_at
+                   edad, disponibilidad, cv_filename, cv_original_name, status, 
+                   created_at, updated_at
             FROM postulaciones 
             $whereClause
             ORDER BY created_at DESC 
@@ -131,9 +170,8 @@ function getAllPostulaciones($pdo) {
         $stmt->execute($params);
         $postulaciones = $stmt->fetchAll();
 
-        jsonResponse([
-            'success' => true,
-            'data' => $postulaciones,
+        sendResponse(true, 'Postulaciones obtenidas', [
+            'postulaciones' => $postulaciones,
             'pagination' => [
                 'page' => $page,
                 'limit' => $limit,
@@ -142,46 +180,41 @@ function getAllPostulaciones($pdo) {
             ]
         ]);
     } catch (Exception $e) {
-        handleError('Error al obtener postulaciones: ' . $e->getMessage());
+        sendError('Error al obtener postulaciones: ' . $e->getMessage());
     }
 }
 
-// Obtener postulación por ID
-function getPostulacionById($pdo) {
+function getPostulacion() {
     $id = $_GET['id'] ?? null;
     
-    if (!$id) {
-        handleError('ID requerido');
-    }
+    if (!$id) sendError('ID requerido');
 
+    $db = getDB();
+    
     try {
-        $stmt = $pdo->prepare("SELECT * FROM postulaciones WHERE id = ?");
+        $stmt = $db->prepare("SELECT * FROM postulaciones WHERE id = ?");
         $stmt->execute([$id]);
         $postulacion = $stmt->fetch();
 
-        if (!$postulacion) {
-            handleError('Postulación no encontrada', 404);
-        }
+        if (!$postulacion) sendError('Postulación no encontrada', 404);
 
-        jsonResponse([
-            'success' => true,
-            'data' => $postulacion
-        ]);
+        sendResponse(true, 'Postulación obtenida', $postulacion);
     } catch (Exception $e) {
-        handleError('Error al obtener postulación: ' . $e->getMessage());
+        sendError('Error al obtener postulación: ' . $e->getMessage());
     }
 }
 
-// Obtener estadísticas de postulaciones
-function getPostulacionesStats($pdo) {
+function getStats() {
+    $db = getDB();
+    
     try {
         // Total de postulaciones
-        $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM postulaciones");
+        $stmt = $db->prepare("SELECT COUNT(*) as total FROM postulaciones");
         $stmt->execute();
         $total = $stmt->fetchColumn();
 
         // Por status
-        $stmt = $pdo->prepare("
+        $stmt = $db->prepare("
             SELECT status, COUNT(*) as count 
             FROM postulaciones 
             GROUP BY status
@@ -190,7 +223,7 @@ function getPostulacionesStats($pdo) {
         $byStatus = $stmt->fetchAll();
 
         // Por universidad
-        $stmt = $pdo->prepare("
+        $stmt = $db->prepare("
             SELECT universidad, COUNT(*) as count 
             FROM postulaciones 
             GROUP BY universidad 
@@ -201,7 +234,7 @@ function getPostulacionesStats($pdo) {
         $byUniversidad = $stmt->fetchAll();
 
         // Por carrera
-        $stmt = $pdo->prepare("
+        $stmt = $db->prepare("
             SELECT carrera, COUNT(*) as count 
             FROM postulaciones 
             GROUP BY carrera 
@@ -211,8 +244,8 @@ function getPostulacionesStats($pdo) {
         $stmt->execute();
         $byCarrera = $stmt->fetchAll();
 
-        // Postulaciones por mes (últimos 6 meses)
-        $stmt = $pdo->prepare("
+        // Por mes (últimos 6 meses)
+        $stmt = $db->prepare("
             SELECT 
                 DATE_FORMAT(created_at, '%Y-%m') as mes,
                 COUNT(*) as count
@@ -224,65 +257,77 @@ function getPostulacionesStats($pdo) {
         $stmt->execute();
         $byMonth = $stmt->fetchAll();
 
-        jsonResponse([
-            'success' => true,
-            'data' => [
-                'total' => $total,
-                'by_status' => $byStatus,
-                'by_universidad' => $byUniversidad,
-                'by_carrera' => $byCarrera,
-                'by_month' => $byMonth
-            ]
+        sendResponse(true, 'Estadísticas obtenidas', [
+            'total' => $total,
+            'by_status' => $byStatus,
+            'by_universidad' => $byUniversidad,
+            'by_carrera' => $byCarrera,
+            'by_month' => $byMonth
         ]);
     } catch (Exception $e) {
-        handleError('Error al obtener estadísticas: ' . $e->getMessage());
+        sendError('Error al obtener estadísticas: ' . $e->getMessage());
     }
 }
 
-// Crear nueva postulación
-function createPostulacion($pdo) {
+// === FUNCIONES POST ===
+function handlePost($action) {
+    switch ($action) {
+        case 'create':
+        case '':
+            createPostulacion();
+            break;
+        default:
+            sendError('Acción no válida');
+    }
+}
+
+function createPostulacion() {
+    // Obtener datos del formulario
+    $data = [
+        'nombres' => cleanInput($_POST['nombres'] ?? ''),
+        'telefono' => cleanInput($_POST['telefono'] ?? ''),
+        'email' => cleanInput($_POST['email'] ?? ''),
+        'universidad' => cleanInput($_POST['universidad'] ?? ''),
+        'universidad_otros' => cleanInput($_POST['universidadOtros'] ?? ''),
+        'anio_estudio' => cleanInput($_POST['anioEstudio'] ?? ''),
+        'edad' => cleanInput($_POST['edad'] ?? ''),
+        'carrera' => cleanInput($_POST['carrera'] ?? ''),
+        'carrera_otro' => cleanInput($_POST['carreraOtro'] ?? ''),
+        'experiencia_previa' => cleanInput($_POST['experienciaPrevia'] ?? ''),
+        'disponibilidad' => cleanInput($_POST['disponibilidad'] ?? ''),
+        'terminos' => isset($_POST['terminos']) ? 1 : 0
+    ];
+
+    // Validar datos
+    $errors = validatePostulacion($data);
+    if (!empty($errors)) {
+        sendError('Datos inválidos: ' . implode(', ', $errors));
+    }
+
+    $db = getDB();
+    
     try {
-        // Obtener datos del formulario
-        $data = [
-            'nombres' => sanitizeInput($_POST['nombres'] ?? ''),
-            'telefono' => sanitizeInput($_POST['telefono'] ?? ''),
-            'email' => sanitizeInput($_POST['email'] ?? ''),
-            'universidad' => sanitizeInput($_POST['universidad'] ?? ''),
-            'universidad_otros' => sanitizeInput($_POST['universidadOtros'] ?? ''),
-            'anio_estudio' => sanitizeInput($_POST['anioEstudio'] ?? ''),
-            'edad' => sanitizeInput($_POST['edad'] ?? ''),
-            'carrera' => sanitizeInput($_POST['carrera'] ?? ''),
-            'carrera_otro' => sanitizeInput($_POST['carreraOtro'] ?? ''),
-            'experiencia_previa' => sanitizeInput($_POST['experienciaPrevia'] ?? ''),
-            'disponibilidad' => sanitizeInput($_POST['disponibilidad'] ?? ''),
-            'terminos' => isset($_POST['terminos']) ? 1 : 0
-        ];
-
-        // Validar datos
-        $errors = validatePostulacionData($data);
-        if (!empty($errors)) {
-            handleError('Datos inválidos: ' . implode(', ', $errors));
-        }
-
-        // Verificar si el email ya existe
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM postulaciones WHERE email = ?");
+        // Verificar email único
+        $stmt = $db->prepare("SELECT COUNT(*) FROM postulaciones WHERE email = ?");
         $stmt->execute([$data['email']]);
         if ($stmt->fetchColumn() > 0) {
-            handleError('Ya existe una postulación con este email');
+            sendError('Ya existe una postulación con este email');
         }
 
         // Subir CV
-        $cvFilename = '';
-        $cvOriginalName = '';
-        if (isset($_FILES['cv']) && $_FILES['cv']['error'] === UPLOAD_ERR_OK) {
+        if (!isset($_FILES['cv']) || $_FILES['cv']['error'] !== UPLOAD_ERR_OK) {
+            sendError('CV requerido');
+        }
+        
+        try {
             $cvFilename = uploadCV($_FILES['cv']);
             $cvOriginalName = $_FILES['cv']['name'];
-        } else {
-            handleError('CV requerido');
+        } catch (Exception $e) {
+            sendError($e->getMessage());
         }
 
         // Insertar en base de datos
-        $stmt = $pdo->prepare("
+        $stmt = $db->prepare("
             INSERT INTO postulaciones (
                 nombres, telefono, email, universidad, universidad_otros, 
                 anio_estudio, edad, carrera, carrera_otro, experiencia_previa, 
@@ -291,73 +336,72 @@ function createPostulacion($pdo) {
         ");
 
         $stmt->execute([
-            $data['nombres'],
-            $data['telefono'],
-            $data['email'],
-            $data['universidad'],
-            $data['universidad_otros'],
-            $data['anio_estudio'],
-            $data['edad'],
-            $data['carrera'],
-            $data['carrera_otro'],
-            $data['experiencia_previa'],
-            $data['disponibilidad'],
-            $cvFilename,
-            $cvOriginalName,
-            $data['terminos']
+            $data['nombres'], $data['telefono'], $data['email'], 
+            $data['universidad'], $data['universidad_otros'], $data['anio_estudio'],
+            $data['edad'], $data['carrera'], $data['carrera_otro'], 
+            $data['experiencia_previa'], $data['disponibilidad'], 
+            $cvFilename, $cvOriginalName, $data['terminos']
         ]);
 
-        $postulacionId = $pdo->lastInsertId();
+        $postulacionId = $db->lastInsertId();
 
-        // Enviar email de confirmación (opcional)
+        // Enviar notificaciones
         sendConfirmationEmail($data['email'], $data['nombres']);
-
-        // Notificar a administradores (opcional)
         notifyAdmins($data);
 
-        jsonResponse([
-            'success' => true,
-            'message' => 'Postulación enviada exitosamente',
-            'data' => [
-                'id' => $postulacionId,
-                'nombres' => $data['nombres'],
-                'email' => $data['email']
-            ]
+        sendResponse(true, 'Postulación enviada exitosamente', [
+            'id' => $postulacionId,
+            'nombres' => $data['nombres'],
+            'email' => $data['email']
         ], 201);
 
     } catch (Exception $e) {
-        handleError('Error al crear postulación: ' . $e->getMessage());
+        sendError('Error al crear postulación: ' . $e->getMessage());
     }
 }
 
-// Actualizar status de postulación
-function updatePostulacionStatus($pdo) {
+// === FUNCIONES PUT ===
+function handlePut($action) {
+    switch ($action) {
+        case 'update-status':
+            updateStatus();
+            break;
+        case 'add-notes':
+            addNotes();
+            break;
+        default:
+            sendError('Acción no válida');
+    }
+}
+
+function updateStatus() {
     $id = $_GET['id'] ?? $_POST['id'] ?? null;
 
+    // Obtener datos PUT
     $inputData = [];
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $rawInput = file_get_contents('php://input');
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
         if (strpos($contentType, 'application/json') !== false) {
             $inputData = json_decode($rawInput, true) ?? [];
-        }else{
+        } else {
             parse_str($rawInput, $inputData);
         }
     }
     
-    $status = sanitizeInput($_POST['status'] ?? $inputData['status'] ?? '');
+    $status = cleanInput($_POST['status'] ?? $inputData['status'] ?? '');
     
-    if (!$id || !$status) {
-        handleError('ID y status requeridos');
-    }
+    if (!$id || !$status) sendError('ID y status requeridos');
 
     $validStatuses = ['pending', 'reviewed', 'accepted', 'rejected'];
     if (!in_array($status, $validStatuses)) {
-        handleError('Status no válido');
+        sendError('Status no válido');
     }
 
+    $db = getDB();
+    
     try {
-        $stmt = $pdo->prepare("
+        $stmt = $db->prepare("
             UPDATE postulaciones 
             SET status = ?, updated_at = CURRENT_TIMESTAMP 
             WHERE id = ?
@@ -365,37 +409,34 @@ function updatePostulacionStatus($pdo) {
         $stmt->execute([$status, $id]);
 
         if ($stmt->rowCount() === 0) {
-            handleError('Postulación no encontrada', 404);
+            sendError('Postulación no encontrada', 404);
         }
 
-        jsonResponse([
-            'success' => true,
-            'message' => 'Status actualizado exitosamente'
-        ]);
+        sendResponse(true, 'Status actualizado exitosamente');
 
     } catch (Exception $e) {
-        handleError('Error al actualizar status: ' . $e->getMessage());
+        sendError('Error al actualizar status: ' . $e->getMessage());
     }
 }
 
-// Agregar notas a postulación
-function addNotesPostulacion($pdo) {
+function addNotes() {
     $id = $_GET['id'] ?? $_POST['id'] ?? null;
     
+    // Obtener datos PUT
     $inputData = [];
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $rawInput = file_get_contents('php://input');
         parse_str($rawInput, $inputData);
     }
     
-    $notas = sanitizeInput($_POST['notas'] ?? $inputData['notas'] ?? '');
+    $notas = cleanInput($_POST['notas'] ?? $inputData['notas'] ?? '');
 
-    if (!$id) {
-        handleError('ID requerido');
-    }
+    if (!$id) sendError('ID requerido');
 
+    $db = getDB();
+    
     try {
-        $stmt = $pdo->prepare("
+        $stmt = $db->prepare("
             UPDATE postulaciones 
             SET notas_admin = ?, updated_at = CURRENT_TIMESTAMP 
             WHERE id = ?
@@ -403,61 +444,89 @@ function addNotesPostulacion($pdo) {
         $stmt->execute([$notas, $id]);
 
         if ($stmt->rowCount() === 0) {
-            handleError('Postulación no encontrada', 404);
+            sendError('Postulación no encontrada', 404);
         }
 
-        jsonResponse([
-            'success' => true,
-            'message' => 'Notas actualizadas exitosamente'
-        ]);
+        sendResponse(true, 'Notas actualizadas exitosamente');
 
     } catch (Exception $e) {
-        handleError('Error al actualizar notas: ' . $e->getMessage());
+        sendError('Error al actualizar notas: ' . $e->getMessage());
     }
 }
 
-// Eliminar postulación
-function deletePostulacion($pdo) {
+// === FUNCIONES DELETE ===
+function handleDelete($action) {
+    switch ($action) {
+        case 'delete':
+            deletePostulacion();
+            break;
+        default:
+            sendError('Acción no válida');
+    }
+}
+
+function deletePostulacion() {
     $id = $_GET['id'] ?? null;
     
-    if (!$id) {
-        handleError('ID requerido');
-    }
+    if (!$id) sendError('ID requerido');
 
+    $db = getDB();
+    
     try {
-        // Obtener datos de la postulación antes de eliminar
-        $stmt = $pdo->prepare("SELECT cv_filename FROM postulaciones WHERE id = ?");
+        // Obtener datos antes de eliminar
+        $stmt = $db->prepare("SELECT cv_filename FROM postulaciones WHERE id = ?");
         $stmt->execute([$id]);
         $postulacion = $stmt->fetch();
 
-        if (!$postulacion) {
-            handleError('Postulación no encontrada', 404);
-        }
+        if (!$postulacion) sendError('Postulación no encontrada', 404);
 
         // Eliminar archivo CV
-        $cvPath = CV_PATH . $postulacion['cv_filename'];
-        if (file_exists($cvPath)) {
-            unlink($cvPath);
+        if (!empty($postulacion['cv_filename'])) {
+            $cvPath = CV_PATH . $postulacion['cv_filename'];
+            if (file_exists($cvPath)) {
+                unlink($cvPath);
+            }
         }
 
         // Eliminar de la base de datos
-        $stmt = $pdo->prepare("DELETE FROM postulaciones WHERE id = ?");
+        $stmt = $db->prepare("DELETE FROM postulaciones WHERE id = ?");
         $stmt->execute([$id]);
 
-        jsonResponse([
-            'success' => true,
-            'message' => 'Postulación eliminada exitosamente'
-        ]);
+        sendResponse(true, 'Postulación eliminada exitosamente');
 
     } catch (Exception $e) {
-        handleError('Error al eliminar postulación: ' . $e->getMessage());
+        sendError('Error al eliminar postulación: ' . $e->getMessage());
     }
 }
 
-// Funciones auxiliares
+// === FUNCIONES AUXILIARES ===
+function validatePostulacion($data) {
+    $errors = [];
+    
+    if (empty($data['nombres'])) $errors[] = 'Nombres requeridos';
+    if (empty($data['email'])) $errors[] = 'Email requerido';
+    if (empty($data['telefono'])) $errors[] = 'Teléfono requerido';
+    if (empty($data['universidad'])) $errors[] = 'Universidad requerida';
+    if (empty($data['carrera'])) $errors[] = 'Carrera requerida';
+    if (empty($data['anio_estudio'])) $errors[] = 'Año de estudio requerido';
+    if (empty($data['edad'])) $errors[] = 'Edad requerida';
+    if (empty($data['disponibilidad'])) $errors[] = 'Disponibilidad requerida';
+    if (!$data['terminos']) $errors[] = 'Debe aceptar los términos';
+    
+    // Validar email
+    if (!empty($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Email no válido';
+    }
+    
+    // Validar edad
+    if (!empty($data['edad']) && (!is_numeric($data['edad']) || $data['edad'] < 16 || $data['edad'] > 100)) {
+        $errors[] = 'Edad debe estar entre 16 y 100 años';
+    }
+    
+    return $errors;
+}
+
 function sendConfirmationEmail($email, $nombres) {
-    // Implementar envío de email de confirmación
-    // Puedes usar PHPMailer, mail() nativo, o un servicio como SendGrid
     try {
         $subject = "Confirmación de postulación - Munay Ruray";
         $message = "
@@ -479,7 +548,6 @@ function sendConfirmationEmail($email, $nombres) {
 }
 
 function notifyAdmins($data) {
-    // Implementar notificación a administradores
     try {
         $adminEmail = "aticona@roomstudio.pe";
         $subject = "Nueva postulación recibida";

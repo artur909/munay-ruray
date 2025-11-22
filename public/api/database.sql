@@ -25,6 +25,25 @@ CREATE TABLE IF NOT EXISTS experiencias (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+
+-- Tabla para usuarios administrativos
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    nombre_completo VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'editor') DEFAULT 'editor',
+    activo BOOLEAN DEFAULT TRUE,
+    ultimo_acceso TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+-- Insertar usuario administrador por defecto
+-- Contraseña: admin123 (cambiar en producción)
+INSERT INTO usuarios (username, email, password_hash, nombre_completo, role) VALUES 
+('admin', 'admin@munayruray.org', 'l9jJ5ESeXawyiFhQ:2aaef4234688cd679cb463c69ccd917a9357b17e9e83ed058cac4605fad76c02', 'Administrador Principal', 'admin');
+
 -- Tabla para las postulaciones
 CREATE TABLE IF NOT EXISTS postulaciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
